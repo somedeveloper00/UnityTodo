@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28f426c28f004c51b70860267b3cb7bd, type: 3}
+  m_Name: In Progress
+  m_EditorClassIdentifier: 
+  order: 2
+  title: In Progress
+  tasks:
+  - title: Add light mode support
+    description: '* Separate system for GUIStyle and use for all GUIs.
+
+      * Fine
+      tune colors'
+    progress: 0
+    isEditing: 0
+  - title: Button Shortcuts
+    description: '* Remove Tasks
+
+      * Duplicate Tasks
+
+      * Move Tasks to
+      Right/Left
+
+      * New Task
+
+      * Unselect all by esc'
+    progress: 0
+    isEditing: 0
+  - title: Reorder Task Lists left/right
+    description: 
+    progress: 0
+    isEditing: 1

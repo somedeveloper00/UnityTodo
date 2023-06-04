@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 28f426c28f004c51b70860267b3cb7bd, type: 3}
-  m_Name: New Task 1
+  m_Name: New Task 3
   m_EditorClassIdentifier: 
-  order: 1
-  title: 
+  order: 3
+  title: Done
   tasks: []

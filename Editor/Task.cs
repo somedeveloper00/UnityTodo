@@ -71,17 +71,18 @@ namespace UnityTodo {
                     
                     // title prop
                     position.height += 10;
-                    using (new GUIColor(progressProp.floatValue < 1 ? unfinishedTitleCol : finishedTitleCol)) {
-                        if (isEditingProp.boolValue) {
-                            titleProp.stringValue = EditorGUI.TextField( position, titleProp.stringValue, GUIStyles.GetNormalTextField() );
-                        }
-                        else {
+                    if (isEditingProp.boolValue) {
+                        titleProp.stringValue = EditorGUI.TextField( position, titleProp.stringValue, GUIStyles.GetNormalTextField() );
+                    }
+                    else {
+                        using (new GUIColor( progressProp.floatValue < 1 ? unfinishedTitleCol : finishedTitleCol )) {
                             var title = progressProp.floatValue < 1
                                 ? titleProp.stringValue
-                                : StrikeThrough(titleProp.stringValue);
+                                : StrikeThrough( titleProp.stringValue );
                             EditorGUI.LabelField( position, title, GUIStyles.GetNormalLabel() );
                         }
                     }
+
                     position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
                     position.x -= 30;
                     position.width += 50 - 15;

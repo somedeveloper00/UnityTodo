@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28f426c28f004c51b70860267b3cb7bd, type: 3}
+  m_Name: Backlog
+  m_EditorClassIdentifier: 
+  order: 1
+  title: Backlog
+  tasks:
+  - title: Title word wrap support
+    description: 
+    progress: 0
+    isEditing: 0
+  - title: Enter Edit mode by mouse click
+    description: 
+    progress: 0
+    isEditing: 0
+  - title: Add object reference pinning
+    description: 
+    progress: 0
+    isEditing: 0
+  - title: Add comment support for each Task
+    description: 
+    progress: 0
+    isEditing: 0
+  - title: Bulletpoints
+    description: provide option to whether use manual slider or bullet-point type
+      (so slider would fill based on completed bulletpoints)
+    progress: 0
+    isEditing: 0
+  - title: Sync with Trello
+    description: 
+    progress: 0
+    isEditing: 0
+  - title: Add nonprogressive Tasks
+    description: i.e. for backlog tasks that don't need progress at the time of being
+      at backlog
+    progress: 0
+    isEditing: 0
+  - title: Task Color
+    description: Add option to pin color to a task (preferrably a gradient based
+      on a serializefield color) for the background of the task)
+    progress: 0
+    isEditing: 0
+  - title: Open Task Editor in modal window
+    description: 
+    progress: 0
+    isEditing: 0
+  - title: Export/Import bulltetpoint formatted tasks
+    description: 
+    progress: 0
+    isEditing: 0

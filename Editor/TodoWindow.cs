@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Codice.Client.Common.WebApi;
 using UnityEditor;
 using UnityEngine;
 
@@ -55,6 +54,7 @@ namespace UnityTodo {
                     addNewTaskList();
                 }
             }
+
         }
 
         void drawToolbar() {
@@ -104,33 +104,34 @@ namespace UnityTodo {
             var newTaskList = CreateInstance<TaskList>();
             newTaskList.order = taskEditors.Count > 0 ? taskEditors.Max( task => task.taskList.order ) + 1 : 0;
             newTaskList.name = "New Task " + newTaskList.order;
-            Directory.CreateDirectory( Settings.TODO_DIRECTORY_LIST_PATH );
-            AssetDatabase.CreateAsset( newTaskList, Path.Combine( Settings.TODO_DIRECTORY_LIST_PATH, newTaskList.name + ".asset" ) );
+            Directory.CreateDirectory( Settings.TODO_DIRECTORY_PATH );
+            AssetDatabase.CreateAsset( newTaskList, Path.Combine( Settings.TODO_DIRECTORY_PATH, newTaskList.name + ".asset" ) );
             AssetDatabase.SaveAssets();
             forceReloadAllTaskEditors();
         }
 
         void forceSaveAllTaskEditors() {
-            bool changed = false;
             foreach (var taskEditor in taskEditors) {
                 foreach (var task in taskEditor.taskList.tasks) {
                     task.isEditing = false;
                 }
-                if (taskEditor.editor) 
-                {
+                if (taskEditor.editor) {
                     taskEditor.editor.serializedObject.ApplyModifiedProperties();
                     if (taskEditor.taskList.name != taskEditor.taskList.title) {
                         AssetDatabase.RenameAsset( AssetDatabase.GetAssetPath( taskEditor.taskList ), taskEditor.taskList.title );
-                        changed = true;
                     }
                 }
             }
-            if (changed)
-                AssetDatabase.Refresh();
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
 
         void forceReloadAllTaskEditors() {
-            taskEditors = Directory.GetFiles( Settings.TODO_DIRECTORY_LIST_PATH, "*.asset", SearchOption.AllDirectories )
+            // reimport path
+            AssetDatabase.Refresh();
+            AssetDatabase.ImportAsset( Settings.TODO_DIRECTORY_PATH, ImportAssetOptions.ImportRecursive );
+            taskEditors = Directory.GetFiles( Settings.TODO_DIRECTORY_PATH, "*.asset", SearchOption.AllDirectories )
                 .Select( AssetDatabase.LoadAssetAtPath<TaskList> )
                 .Where( elem => elem != null )
                 .OrderBy( task => task.order )

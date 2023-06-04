@@ -20,7 +20,7 @@ MonoBehaviour:
 
       * Fine
       tune colors'
-    progress: 0.978
+    progress: 1
     isEditing: 0
   - title: Shortcuts
     description: '* Save all

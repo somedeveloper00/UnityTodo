@@ -15,14 +15,6 @@ MonoBehaviour:
   order: 1
   title: Backlog
   tasks:
-  - title: Title word wrap support
-    description: 
-    progress: 0
-    isEditing: 0
-  - title: Enter Edit mode by mouse click
-    description: 
-    progress: 0
-    isEditing: 0
   - title: Add object reference pinning
     description: 
     progress: 0

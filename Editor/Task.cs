@@ -45,44 +45,48 @@ namespace UnityTodo {
                     position.x += 30;
                     position.width -= 50;
                     
+                    if (Event.current.type == EventType.Repaint)
+                        lastDescriptionWidth = position.width;
+                    
                     // title prop
                     position.height += 10;
                     var titleText = progressProp.floatValue < 1 || isEditingProp.boolValue ? titleProp.stringValue : StrikeThrough( titleProp.stringValue );
                     var titleStyle = isEditingProp.boolValue
                         ? Task_GetTitleTextEdit()
                         : progressProp.floatValue < 1 ? Task_GetUnfinishedTitleText() : Task_GetFinishedTitleText();
+                    var titleHeight = titleStyle.CalcHeight( new GUIContent( titleText ), position.width );
+                    position.height = titleHeight;
                     using (var check = new EditorGUI.ChangeCheckScope()) {
                         var r = EditorGUI.TextField( position, titleText, titleStyle );
-                        if (check.changed && isEditingProp.boolValue) {
+                        if (check.changed && isEditingProp.boolValue) 
                             titleProp.stringValue = r;
-                        }
                     }
-
                     position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
                     position.x -= 30;
                     position.width += 50 - 15;
                     
                     // description prop
-                    var descStyle = isEditingProp.boolValue
-                        ? Task_GetDescTextEdit()
-                        : progressProp.floatValue < 1 ? Task_GetUnfinishedDescText() : Task_GetFinishedDescText();
-                    var height = isEditingProp.boolValue
-                        ? Mathf.Max( descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), position.width ), 50 )
-                        : descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), position.width );
-                    position.height = height;
-                    using (var check = new EditorGUI.ChangeCheckScope()) {
-                        var r = EditorGUI.TextArea( position, descriptionProp.stringValue, descStyle );
-                        if (check.changed && isEditingProp.boolValue) 
-                            descriptionProp.stringValue = r;
+                    if (isEditingProp.boolValue || !string.IsNullOrEmpty( descriptionProp.stringValue )) {
+                        position.y += 5;
+                        var descStyle = isEditingProp.boolValue
+                            ? Task_GetDescTextEdit()
+                            : progressProp.floatValue < 1 ? Task_GetUnfinishedDescText() : Task_GetFinishedDescText();
+                        var height = isEditingProp.boolValue
+                            ? Mathf.Max( descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), position.width ), 50 )
+                            : descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), position.width );
+                        position.height = height;
+                        using (var check = new EditorGUI.ChangeCheckScope()) {
+                            var r = EditorGUI.TextArea( position, descriptionProp.stringValue, descStyle );
+                            if (check.changed && isEditingProp.boolValue) 
+                                descriptionProp.stringValue = r;
+                        }
+                        position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
                     }
-                    position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
 
                     
-                    if (Event.current.type == EventType.Repaint)
-                        lastDescriptionWidth = position.width;
-                    position.height = EditorGUIUtility.singleLineHeight;
 
                     // progress prop
+                    position.height = EditorGUIUtility.singleLineHeight;
                     if (isEditingProp.boolValue) {
                         progressProp.floatValue = EditorGUI.Slider( position, progressProp.floatValue, 0, 1 );
                     }
@@ -106,17 +110,29 @@ namespace UnityTodo {
 
             public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
                 var descriptionProp = property.FindPropertyRelative( nameof(description) );
+                var titleProp = property.FindPropertyRelative( nameof(title) );
                 var isEditingProp = property.FindPropertyRelative( nameof(isEditing) );
                 var progressProp = property.FindPropertyRelative( nameof(progress) );
-                var h = 4 + (EditorGUIUtility.singleLineHeight + 10) + EditorGUIUtility.standardVerticalSpacing;
-                
-                var descStyle = isEditingProp.boolValue
-                    ? Task_GetDescTextEdit()
-                    : progressProp.floatValue < 1 ? Task_GetUnfinishedDescText() : Task_GetFinishedDescText();
-                h += isEditingProp.boolValue
-                    ? Mathf.Max( descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), lastDescriptionWidth ), 50 )
-                    : descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), lastDescriptionWidth );
+                float h = 4;
+
+                // title
+                var titleStyle = isEditingProp.boolValue
+                    ? Task_GetTitleTextEdit()
+                    : progressProp.floatValue < 1 ? Task_GetUnfinishedTitleText() : Task_GetFinishedTitleText();
+                h += titleStyle.CalcHeight( new GUIContent( titleProp.stringValue ), lastDescriptionWidth);
                 h += EditorGUIUtility.standardVerticalSpacing;
+
+                // desc
+                if (isEditingProp.boolValue || !string.IsNullOrEmpty( descriptionProp.stringValue )) {
+                    h += 5;
+                    var descStyle = isEditingProp.boolValue
+                        ? Task_GetDescTextEdit()
+                        : progressProp.floatValue < 1 ? Task_GetUnfinishedDescText() : Task_GetFinishedDescText();
+                    h += isEditingProp.boolValue
+                        ? Mathf.Max( descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), lastDescriptionWidth ), 50 )
+                        : descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), lastDescriptionWidth );
+                    h += EditorGUIUtility.standardVerticalSpacing;
+                }
 
                 h += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                 return h;

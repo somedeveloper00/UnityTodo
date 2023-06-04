@@ -22,6 +22,14 @@ MonoBehaviour:
       tune colors'
     progress: 1
     isEditing: 0
+  - title: Title word wrap support
+    description: 
+    progress: 1
+    isEditing: 0
+  - title: Enter Edit mode by mouse click
+    description: 
+    progress: 0
+    isEditing: 0
   - title: Shortcuts
     description: '* Save all
 

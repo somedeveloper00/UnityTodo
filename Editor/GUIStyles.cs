@@ -167,7 +167,7 @@ namespace UnityTodo {
 
 #region Task Drawer
 
-        public static Color Taskt_ProgOutlineCol => EditorGUIUtility.isProSkin ? new ( 0.7f, 0.7f, 0.7f ) : new ( 0.3f, 0.3f, 0.3f );
+        public static Color Taskt_ProgOutlineCol => EditorGUIUtility.isProSkin ? new ( 0.5f, 0.5f, 0.5f ) : new ( 0.3f, 0.3f, 0.3f );
         public static Color Taskt_ProgressBackCol => EditorGUIUtility.isProSkin ? new ( 0.2f, 0.2f, 0.2f ) : new ( 0.8f, 0.8f, 0.8f );
         public static Color Taskt_FinishedProgressCol => EditorGUIUtility.isProSkin ? new ( 0, 0.3f, 0 ) : new ( 0, 0.3f, 0 );
         public static Color Taskt_UnfinishedProgressCol => EditorGUIUtility.isProSkin ? new ( 0, 0.5f, 0 ) : new ( 0, 0.5f, 0 );
@@ -177,6 +177,7 @@ namespace UnityTodo {
             if (_task_FinishedTitleText == null) {
                 var style = new GUIStyle( EditorStyles.label );
                 style.fontSize = NORMAL_FONT_SIZE;
+                style.wordWrap = true;
                 style.alignment = TextAnchor.MiddleCenter;
                 style.richText = false;
                 style.normal.textColor =
@@ -194,6 +195,7 @@ namespace UnityTodo {
             if (_task_UnfinishedTitleText == null) {
                 var style = new GUIStyle( EditorStyles.label );
                 style.fontSize = NORMAL_FONT_SIZE;
+                style.wordWrap = true;
                 style.fontStyle = FontStyle.Bold;
                 style.richText = false;
                 style.alignment = TextAnchor.MiddleCenter;
@@ -212,6 +214,7 @@ namespace UnityTodo {
             if (_task_TitleTextEdit == null) {
                 var style = new GUIStyle( EditorStyles.textField );
                 style.fontSize = NORMAL_FONT_SIZE;
+                style.wordWrap = true;
                 style.richText = false;
                 style.alignment = TextAnchor.MiddleCenter;
                 _task_TitleTextEdit = style;
@@ -270,10 +273,6 @@ namespace UnityTodo {
 
             return _task_DescTextEdit;
         }
-        // public static Color Taskt_FinishedTitleCol => EditorGUIUtility.isProSkin ? new ( 0.75f, 0.75f, 0.75f ) : new ( 1f, 1f, 1f );
-        // public static Color Taskt_UnfinishedTitleCol => EditorGUIUtility.isProSkin ? new ( 0.95f, 0.95f, 0.95f ) : new ( 0.05f, 0.05f, 0.05f );
-        // public static Color Taskt_FinishedDescCol => EditorGUIUtility.isProSkin ? new ( 0.7f, 0.7f, 0.7f ) : new ( 0.8f, 0.8f, 0.8f );
-        // public static Color Taskt_UnfinishedDescCol => EditorGUIUtility.isProSkin ? new ( 0.9f, 0.9f, 0.9f ) : new ( 0.1f, 0.1f, 0.1f );
 #endregion
 
         public static Texture2D CreateTexture(Color color) {

@@ -34,3 +34,7 @@ MonoBehaviour:
     description: 
     progress: 0
     isEditing: 0
+  - title: '[Bug] "Move To" options not updating as they should'
+    description: they don't update after deleting a task list
+    progress: 0
+    isEditing: 0

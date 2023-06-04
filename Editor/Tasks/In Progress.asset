@@ -38,4 +38,4 @@ MonoBehaviour:
   - title: Reorder Task Lists left/right
     description: 
     progress: 0
-    isEditing: 1
+    isEditing: 0

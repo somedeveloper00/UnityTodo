@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using static UnityTodo.GUIStyles;
 using static UnityTodo.GUIUtilities;
 
 namespace UnityTodo {
@@ -27,17 +28,11 @@ namespace UnityTodo {
 
             [NonSerialized] Vector3 tasksScrollPos;
 
-            [NonSerialized] static readonly Color progOutlineCol = new Color( 0.1f, 0.1f, 0.1f ); 
-            [NonSerialized] static readonly Color progBckCol = new Color( 0.2f, 0.2f, 0.2f ); 
-            [NonSerialized] static readonly Color progFillCol = new Color( 0f, 0.4f, 0f ); 
-            [NonSerialized] static readonly Color progTextCol = new Color( 0.7f, 0.7f, 0.7f ); 
-            
             void OnEnable() {
                 var tasksProp = serializedObject.FindProperty( nameof(tasks) );
                 _list = new ExposedReorderableList( serializedObject, tasksProp, true, false, false, false );
                 
                 _list.drawElementCallback += (rect, index, active, focused) => {
-
                     
                     // escape to cancel edite mode
                     if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Escape) {
@@ -141,24 +136,28 @@ namespace UnityTodo {
                 var titleProp = serializedObject.FindProperty( nameof(title) );
 
 
-                var headerRect = EditorGUILayout.GetControlRect( false, 40, GUIStyle.none );
+                var headerRect = EditorGUILayout.GetControlRect( false, 60, GUIStyle.none );
                 
                 var progress = ((TaskList)target).GetProgress();
                 if (progress < 1) {
                     var progRect = headerRect;
-                    EditorGUI.DrawRect( progRect, progOutlineCol );
+                    EditorGUI.DrawRect( progRect, TaskList_ProgOutlineCol );
                     progRect.x += 1; progRect.y += 1;
                     progRect.width -= 2; progRect.height -= 2;
-                    EditorGUI.DrawRect( progRect, progBckCol );
+                    EditorGUI.DrawRect( progRect, TaskList_ProgBackCol );
                     progRect.width *= progress;
-                    EditorGUI.DrawRect( progRect, progFillCol );
-                    progRect.x += 5;
-                    progRect.y += 5;
-                    using (new GUIColor( progTextCol ))
-                        EditorGUI.LabelField( progRect, $"<b><i>{(int)(progress * 100)}%</i></b>", GUIStyles.GetSmallLabel() );
+                    EditorGUI.DrawRect( progRect, TaskList_ProgFillCol );
+                    progRect.x += 5; progRect.width = 50; 
+                    progRect.y += progRect.height - 25; progRect.height = 20;
+                    EditorGUI.LabelField( progRect, $"{(int)(progress * 100)}%", TaskList_GetProgText() );
                 }
 
-                var bottomHeaderRect = new Rect( headerRect.x + headerRect.width - 20, headerRect.y + headerRect.height - 20, 20, 20 );
+
+                // headerRect.size = new Vector2( headerRect.width - 50, headerRect.height );
+                headerRect.height -= 20;
+                titleProp.stringValue = EditorGUI.TextField( headerRect, titleProp.stringValue, GetBigLabel() );
+                
+                var bottomHeaderRect = new Rect( headerRect.x + headerRect.width - 20, headerRect.y + headerRect.height, 20, 20 );
                 
                 if (GUI.Button( bottomHeaderRect, new GUIContent(EditorGUIUtility.FindTexture( "TreeEditor.Trash" ), "Delete Task List"), EditorStyles.iconButton )) {
                     AssetDatabase.DeleteAsset( AssetDatabase.GetAssetPath( target ) );
@@ -179,9 +178,6 @@ namespace UnityTodo {
                     var json = EditorGUIUtility.systemCopyBuffer;
                     JsonUtility.FromJsonOverwrite( json, target );
                 }
-
-                headerRect.size = new Vector2( headerRect.width - 50, headerRect.height );
-                titleProp.stringValue = EditorGUI.TextField( headerRect, titleProp.stringValue, GUIStyles.GetBigLabel() );
 
                 using (var scroll = new EditorGUILayout.ScrollViewScope( tasksScrollPos )) {
                     tasksScrollPos = scroll.scrollPosition;

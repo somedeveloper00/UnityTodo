@@ -83,5 +83,27 @@ namespace UnityTodo {
 
             return _smallLabel;
         }
+
+#region TaskList
+        
+        public static Color TaskList_ProgOutlineCol => EditorGUIUtility.isProSkin ? new ( 0.1f, 0.1f, 0.1f ) : new (0.9f, 0.9f, 0.9f);
+        public static Color TaskList_ProgBackCol => EditorGUIUtility.isProSkin ? new ( 0.2f, 0.2f, 0.2f ) : new (0.8f, 0.8f, 0.8f);
+        public static Color TaskList_ProgFillCol => EditorGUIUtility.isProSkin ? new ( 0f, 0.4f, 0f ) : new (0.5f, 0.75f, 0.5f);
+
+        [NonSerialized] static GUIStyle _taskList_ProgText;
+        public static GUIStyle TaskList_GetProgText() {
+            if (_taskList_ProgText == null) {
+                _taskList_ProgText = new GUIStyle( EditorStyles.label );
+                _taskList_ProgText.fontSize = 12;
+                _taskList_ProgText.fontStyle = FontStyle.BoldAndItalic;
+                Color color = EditorGUIUtility.isProSkin ? new(0.7f, 0.7f, 0.7f) : new(0.3f, 0.3f, 0.3f);
+                _taskList_ProgText.normal.textColor = color;
+                _taskList_ProgText.alignment = TextAnchor.MiddleCenter;
+            }
+            return _taskList_ProgText;
+        }
+        
+
+#endregion
     }
 }

@@ -20,15 +20,17 @@ MonoBehaviour:
 
       * Fine
       tune colors'
-    progress: 0
+    progress: 0.978
     isEditing: 0
-  - title: Button Shortcuts
-    description: '* Remove Tasks
+  - title: Shortcuts
+    description: '* Save all
+
+      * Remove Tasks
 
       * Duplicate Tasks
 
-      * Move Tasks to
-      Right/Left
+      *
+      Move Tasks to Right/Left
 
       * New Task
 
@@ -37,5 +39,12 @@ MonoBehaviour:
     isEditing: 0
   - title: Reorder Task Lists left/right
     description: 
+    progress: 0
+    isEditing: 0
+  - title: Mouse interactions
+    description: '* like Trello, enter edit mode when clicked on a task
+
+      *
+      only on editting task at a time.'
     progress: 0
     isEditing: 0

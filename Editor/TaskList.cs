@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine;
 using static UnityTodo.GUIStyles;
-using static UnityTodo.GUIUtilities;
 
 namespace UnityTodo {
     internal class TaskList : ScriptableObject {
@@ -34,20 +32,6 @@ namespace UnityTodo {
                 
                 _list.drawElementCallback += (rect, index, active, focused) => {
                     
-                    // escape to cancel edite mode
-                    if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Escape) {
-                        _list.serializedProperty.GetArrayElementAtIndex( index ).FindPropertyRelative( nameof(Task.isEditing) ).boolValue = false;
-                        _list.ClearCache();
-                        _list.CacheIfNeeded();
-                        EditorApplication.delayCall += Repaint;
-                        Event.current.Use();
-
-                    }
-                    if ((focused || active) && Event.current.type == EventType.KeyDown && Event.current.keyCode is KeyCode.Escape) {
-                        _list.ClearSelection();
-                    }
-                    
-
                     bool buttonClick() => GUI.Button( new Rect( rect.x + rect.width - 15, rect.y, 20, 20 ), EditorGUIUtility.FindTexture( "d__Menu" ), EditorStyles.iconButton );
                     bool contextMenuClick() => Event.current.type == EventType.ContextClick && rect.Contains( Event.current.mousePosition );
                     
@@ -134,8 +118,7 @@ namespace UnityTodo {
             public override void OnInspectorGUI() {
                 serializedObject.Update();
                 var titleProp = serializedObject.FindProperty( nameof(title) );
-
-
+                
                 var headerRect = EditorGUILayout.GetControlRect( false, 60, GUIStyle.none );
                 
                 var progress = ((TaskList)target).GetProgress();
@@ -153,30 +136,38 @@ namespace UnityTodo {
                 }
 
 
-                // headerRect.size = new Vector2( headerRect.width - 50, headerRect.height );
                 headerRect.height -= 20;
-                titleProp.stringValue = EditorGUI.TextField( headerRect, titleProp.stringValue, GetBigLabel() );
+                titleProp.stringValue = EditorGUI.TextField( headerRect, titleProp.stringValue, TaskList_GetTitleText() );
                 
-                var bottomHeaderRect = new Rect( headerRect.x + headerRect.width - 20, headerRect.y + headerRect.height, 20, 20 );
-                
-                if (GUI.Button( bottomHeaderRect, new GUIContent(EditorGUIUtility.FindTexture( "TreeEditor.Trash" ), "Delete Task List"), EditorStyles.iconButton )) {
-                    AssetDatabase.DeleteAsset( AssetDatabase.GetAssetPath( target ) );
-                    return;
-                }
-                
-                bottomHeaderRect.x -= bottomHeaderRect.width;
+                // toolbar
+                {
+                    var toolbarRect = new Rect( headerRect.x + 2, headerRect.y + headerRect.height - 2, headerRect.width - 4, 20 - 2 );
+                    if (toolbarRect.Contains( Event.current.mousePosition )) {
+                        // change mouse cursor
+                        EditorGUIUtility.AddCursorRect( toolbarRect, MouseCursor.Arrow );
+                    }
+                    
+                    toolbarRect.x += toolbarRect.width - 60;
+                    toolbarRect.width = 60;
+                    if (GUI.Button( toolbarRect, new GUIContent("Delete", TaskList_GetDeleteTex(), "Delete Task List"), TaskList_GetToolbarButton() )) {
+                        AssetDatabase.DeleteAsset( AssetDatabase.GetAssetPath( target ) );
+                        return;
+                    }
+                    
+                    toolbarRect.x -= toolbarRect.width;
 
-                if (GUI.Button( bottomHeaderRect, new GUIContent(EditorGUIUtility.FindTexture( "Clipboard" ), "Copy To Clipboard"), EditorStyles.iconButton )) {
-                    var json = JsonUtility.ToJson( target );
-                    EditorGUIUtility.systemCopyBuffer = json;
-                }
-                
-                bottomHeaderRect.x -= bottomHeaderRect.width;
-                
-                if (GUI.Button( bottomHeaderRect, new GUIContent(EditorGUIUtility.FindTexture( "d_Toolbar Plus More" ), "Import From Clipboard"), EditorStyles.iconButton )) {
-                    Undo.RecordObject( target, "Pasted task list" );
-                    var json = EditorGUIUtility.systemCopyBuffer;
-                    JsonUtility.FromJsonOverwrite( json, target );
+                    if (GUI.Button( toolbarRect, new GUIContent("Copy", TaskList_GetCopyTex(), "Copy To Clipboard"), TaskList_GetToolbarButton() )) {
+                        var json = JsonUtility.ToJson( target );
+                        EditorGUIUtility.systemCopyBuffer = json;
+                    }
+                    
+                    toolbarRect.x -= toolbarRect.width;
+                    
+                    if (GUI.Button( toolbarRect, new GUIContent("Paste", TaskList_GetPasteTex(), "Import From Clipboard"), TaskList_GetToolbarButton() )) {
+                        Undo.RecordObject( target, "Pasted task list" );
+                        var json = EditorGUIUtility.systemCopyBuffer;
+                        JsonUtility.FromJsonOverwrite( json, target );
+                    }
                 }
 
                 using (var scroll = new EditorGUILayout.ScrollViewScope( tasksScrollPos )) {
@@ -184,7 +175,21 @@ namespace UnityTodo {
                     _list.DoLayoutList();
                 }
                 
-                EditorUtility.SetDirty( _list.serializedProperty.serializedObject.targetObject );
+                
+                // general shortcuts
+                {
+                    // cancel edit mode
+                    if (Event.current.type == EventType.KeyDown && Event.current.keyCode is KeyCode.Escape) {
+                        for (int i = 0; i < _list.serializedProperty.arraySize; i++) {
+                            _list.serializedProperty.GetArrayElementAtIndex( i )
+                                .FindPropertyRelative( nameof(Task.isEditing) ).boolValue = false;
+                        }
+    
+                        EditorWindow.focusedWindow?.Repaint();
+                        _list.ClearCache();
+                        _list.CacheIfNeeded();
+                    }
+                }
                 serializedObject.ApplyModifiedProperties();
             }
         }

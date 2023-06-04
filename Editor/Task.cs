@@ -1,7 +1,6 @@
 using System;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using static UnityTodo.GUIStyles;
 using static UnityTodo.GUIUtilities;
 
@@ -83,7 +82,6 @@ namespace UnityTodo {
                         position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
                     }
 
-                    
 
                     // progress prop
                     position.height = EditorGUIUtility.singleLineHeight;

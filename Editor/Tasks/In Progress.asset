@@ -15,21 +15,6 @@ MonoBehaviour:
   order: 2
   title: In Progress
   tasks:
-  - title: Add light mode support
-    description: '* Separate system for GUIStyle and use for all GUIs.
-
-      * Fine
-      tune colors'
-    progress: 1
-    isEditing: 0
-  - title: Title word wrap support
-    description: 
-    progress: 1
-    isEditing: 0
-  - title: Enter Edit mode by mouse click
-    description: 
-    progress: 0
-    isEditing: 0
   - title: Shortcuts
     description: '* Save all
 
@@ -47,12 +32,5 @@ MonoBehaviour:
     isEditing: 0
   - title: Reorder Task Lists left/right
     description: 
-    progress: 0
-    isEditing: 0
-  - title: Mouse interactions
-    description: '* like Trello, enter edit mode when clicked on a task
-
-      *
-      only on editting task at a time.'
     progress: 0
     isEditing: 0

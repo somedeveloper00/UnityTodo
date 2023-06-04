@@ -31,6 +31,9 @@ namespace UnityTodo {
                 _list = new ExposedReorderableList( serializedObject, tasksProp, true, false, false, false );
                 
                 _list.drawElementCallback += (rect, index, active, focused) => {
+
+                    var isEditingProp = _list.serializedProperty.GetArrayElementAtIndex( index )
+                        .FindPropertyRelative( nameof(Task.isEditing) );
                     
                     bool buttonClick() => GUI.Button( new Rect( rect.x + rect.width - 15, rect.y, 20, 20 ), EditorGUIUtility.FindTexture( "d__Menu" ), EditorStyles.iconButton );
                     bool contextMenuClick() => Event.current.type == EventType.ContextClick && rect.Contains( Event.current.mousePosition );
@@ -39,8 +42,6 @@ namespace UnityTodo {
                         Event.current.Use();
                         var progressProp = _list.serializedProperty.GetArrayElementAtIndex( index )
                             .FindPropertyRelative( nameof(Task.progress) );
-                        var isEditingProp = _list.serializedProperty.GetArrayElementAtIndex( index )
-                            .FindPropertyRelative( nameof(Task.isEditing) );
                         
                         var menu = new GenericMenu();
                         menu.AddItem( new GUIContent("Delete Task"), false, () => {
@@ -98,7 +99,27 @@ namespace UnityTodo {
 
                     if (tasksProp.arraySize <= index) return; 
                     
+                    // check for click anywhere to enter edit mode
+                    // the reason for doing it here is EditorGUI.PropertyField uses up the mouse event 
+                    bool clicked() => Event.current.type == EventType.MouseUp && Event.current.button == 0;
+                    bool mouseOverProp() => rect.Contains( Event.current.mousePosition );
+                    var wantsToGoEditMode = !isEditingProp.boolValue && clicked() && mouseOverProp();
+                    
                     EditorGUI.PropertyField( rect, tasksProp.GetArrayElementAtIndex( index ) );
+
+                    // check if it's already in edit mode
+                    if (wantsToGoEditMode) {
+                        if (!isEditingProp.boolValue) {
+                            for (int i = 0; i < _list.serializedProperty.arraySize; i++)
+                                _list.serializedProperty.GetArrayElementAtIndex( i )
+                                    .FindPropertyRelative( nameof(Task.isEditing) ).boolValue = i == index;
+
+                            EditorWindow.focusedWindow?.Repaint();
+                            _list.ClearCache();
+                            _list.CacheIfNeeded();
+                        }
+                    }
+
                 };
                 _list.elementHeightCallback += index =>
                     EditorGUI.GetPropertyHeight( tasksProp.GetArrayElementAtIndex( index ) );

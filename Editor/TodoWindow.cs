@@ -104,8 +104,8 @@ namespace UnityTodo {
             var newTaskList = CreateInstance<TaskList>();
             newTaskList.order = taskEditors.Count > 0 ? taskEditors.Max( task => task.taskList.order ) + 1 : 0;
             newTaskList.name = "New Task " + newTaskList.order;
-            Directory.CreateDirectory( Settings.TODO_DIRECTORY_LIST_PATH );
-            AssetDatabase.CreateAsset( newTaskList, Path.Combine( Settings.TODO_DIRECTORY_LIST_PATH, newTaskList.name + ".asset" ) );
+            Directory.CreateDirectory( Settings.TODO_DIRECTORY_PATH );
+            AssetDatabase.CreateAsset( newTaskList, Path.Combine( Settings.TODO_DIRECTORY_PATH, newTaskList.name + ".asset" ) );
             AssetDatabase.SaveAssets();
             forceReloadAllTaskEditors();
         }
@@ -130,7 +130,7 @@ namespace UnityTodo {
         }
 
         void forceReloadAllTaskEditors() {
-            taskEditors = Directory.GetFiles( Settings.TODO_DIRECTORY_LIST_PATH, "*.asset", SearchOption.AllDirectories )
+            taskEditors = Directory.GetFiles( Settings.TODO_DIRECTORY_PATH, "*.asset", SearchOption.AllDirectories )
                 .Select( AssetDatabase.LoadAssetAtPath<TaskList> )
                 .Where( elem => elem != null )
                 .OrderBy( task => task.order )

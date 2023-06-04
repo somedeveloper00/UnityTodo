@@ -11,6 +11,7 @@ namespace UnityTodo {
             }
             public void Dispose() => GUI.color = col;
         }
+        
         public class GUIBackgroundColor : IDisposable {
             Color col;
             public GUIBackgroundColor(Color color) {

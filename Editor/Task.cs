@@ -1,6 +1,7 @@
 using System;
 using UnityEditor;
 using UnityEngine;
+using static UnityTodo.GUIUtilities;
 
 namespace UnityTodo {
     [Serializable] internal class Task {
@@ -10,16 +11,34 @@ namespace UnityTodo {
         [HideInInspector] public bool isEditing = true;
 
         [CustomPropertyDrawer(typeof(Task))]
-        class customDrawer : PropertyDrawer {
+        class drawer : PropertyDrawer {
 
-            [NonSerialized] static readonly Color progressOutlineCol = new( 0.7f, 0.7f, 0.7f );
-            [NonSerialized] static readonly Color progressBackCol = new( 0.2f, 0.2f, 0.2f );
-            [NonSerialized] static readonly Color finishedProgressCol = new( 0, 0.3f, 0 );
-            [NonSerialized] static readonly Color unfinishedProgressCol = new( 0, 0.5f, 0 );
-            [NonSerialized] static readonly Color finishedTitleCol = new( 0.75f, 0.75f, 0.75f );
-            [NonSerialized] static readonly Color unfinishedTitleCol = new( 0.95f, 0.95f, 0.95f );
-            [NonSerialized] static readonly Color finishedDescCol = new( 0.7f, 0.7f, 0.7f );
-            [NonSerialized] static readonly Color unfinishedDescCol = new( 0.9f, 0.9f, 0.9f );
+            [NonSerialized] static readonly Color dark_progressOutlineCol = new( 0.7f, 0.7f, 0.7f );
+            [NonSerialized] static readonly Color dark_progressBackCol = new( 0.2f, 0.2f, 0.2f );
+            [NonSerialized] static readonly Color dark_finishedProgressCol = new( 0, 0.3f, 0 );
+            [NonSerialized] static readonly Color dark_unfinishedProgressCol = new( 0, 0.5f, 0 );
+            [NonSerialized] static readonly Color dark_finishedTitleCol = new( 0.75f, 0.75f, 0.75f );
+            [NonSerialized] static readonly Color dark_unfinishedTitleCol = new( 0.95f, 0.95f, 0.95f );
+            [NonSerialized] static readonly Color dark_finishedDescCol = new( 0.7f, 0.7f, 0.7f );
+            [NonSerialized] static readonly Color dark_unfinishedDescCol = new( 0.9f, 0.9f, 0.9f );
+            
+            [NonSerialized] static readonly Color light_progressOutlineCol = new( 0.3f, 0.3f, 0.3f );
+            [NonSerialized] static readonly Color light_progressBackCol = new( 0.8f, 0.8f, 0.8f );
+            [NonSerialized] static readonly Color light_finishedProgressCol = new( 0, 0.3f, 0 );
+            [NonSerialized] static readonly Color light_unfinishedProgressCol = new( 0, 0.5f, 0 );
+            [NonSerialized] static readonly Color light_finishedTitleCol = new( 1f, 1f, 1f );
+            [NonSerialized] static readonly Color light_unfinishedTitleCol = new( 0.05f, 0.05f, 0.05f );
+            [NonSerialized] static readonly Color light_finishedDescCol = new( 0.8f, 0.8f, 0.8f );
+            [NonSerialized] static readonly Color light_unfinishedDescCol = new( 0.1f, 0.1f, 0.1f );
+
+            [NonSerialized] static readonly Color progressOutlineCol = EditorGUIUtility.isProSkin ? dark_progressOutlineCol : light_progressOutlineCol;
+            [NonSerialized] static readonly Color progressBackCol = EditorGUIUtility.isProSkin ? dark_progressBackCol : light_progressBackCol; 
+            [NonSerialized] static readonly Color finishedProgressCol = EditorGUIUtility.isProSkin ? dark_finishedProgressCol : light_finishedProgressCol; 
+            [NonSerialized] static readonly Color unfinishedProgressCol = EditorGUIUtility.isProSkin ? dark_unfinishedProgressCol : light_unfinishedProgressCol; 
+            [NonSerialized] static readonly Color finishedTitleCol = EditorGUIUtility.isProSkin ? dark_finishedTitleCol : light_finishedTitleCol; 
+            [NonSerialized] static readonly Color unfinishedTitleCol = EditorGUIUtility.isProSkin ? dark_unfinishedTitleCol : light_unfinishedTitleCol; 
+            [NonSerialized] static readonly Color finishedDescCol = EditorGUIUtility.isProSkin ? dark_finishedDescCol : light_finishedDescCol; 
+            [NonSerialized] static readonly Color unfinishedDescCol = EditorGUIUtility.isProSkin ? dark_unfinishedDescCol : light_unfinishedDescCol;
 
             float lastDescriptionWidth;
             
@@ -52,15 +71,15 @@ namespace UnityTodo {
                     
                     // title prop
                     position.height += 10;
-                    using (new GUIUtilities.GUIColor(progressProp.floatValue == 1 ? finishedTitleCol : unfinishedTitleCol)) {
+                    using (new GUIColor(progressProp.floatValue < 1 ? unfinishedTitleCol : finishedTitleCol)) {
                         if (isEditingProp.boolValue) {
                             titleProp.stringValue = EditorGUI.TextField( position, titleProp.stringValue, GUIStyles.GetNormalTextField() );
                         }
                         else {
-                            var title = progressProp.floatValue == 1
-                                ? GUIUtilities.StrikeThrough(titleProp.stringValue)
-                                : titleProp.stringValue;
-                            EditorGUI.SelectableLabel( position, title, GUIStyles.GetNormalLabel() );
+                            var title = progressProp.floatValue < 1
+                                ? titleProp.stringValue
+                                : StrikeThrough(titleProp.stringValue);
+                            EditorGUI.LabelField( position, title, GUIStyles.GetNormalLabel() );
                         }
                     }
                     position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
@@ -76,12 +95,11 @@ namespace UnityTodo {
                         position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
                     }
                     else if (!string.IsNullOrEmpty( descriptionProp.stringValue )) {
-                        using (new GUIUtilities.GUIColor( progressProp.floatValue == 1 ? finishedDescCol : unfinishedDescCol )) {
-                            position.height = GUIStyles.GetSmallLabel().CalcHeight(
-                                new GUIContent( descriptionProp.stringValue ), position.width );
-                            var title = progressProp.floatValue == 1
-                                ? GUIUtilities.StrikeThrough( descriptionProp.stringValue )
-                                : descriptionProp.stringValue;
+                        using (new GUIColor( progressProp.floatValue < 1 ?  unfinishedDescCol : finishedDescCol  )) {
+                            position.height = GUIStyles.GetSmallLabel().CalcHeight( new GUIContent( descriptionProp.stringValue ), position.width );
+                            var title = progressProp.floatValue < 1
+                                ? descriptionProp.stringValue
+                                : StrikeThrough( descriptionProp.stringValue );
                             EditorGUI.SelectableLabel( position, title, GUIStyles.GetSmallLabel() );
                             position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
                         }

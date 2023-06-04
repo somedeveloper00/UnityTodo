@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using static UnityTodo.GUIUtilities;
 
 namespace UnityTodo {
     internal class TaskList : ScriptableObject {
@@ -22,7 +23,7 @@ namespace UnityTodo {
 
         [CustomEditor(typeof(TaskList))]
         class editor : Editor {
-            [NonSerialized] ReorderableList _list;
+            [NonSerialized] ExposedReorderableList _list;
 
             [NonSerialized] Vector3 tasksScrollPos;
 
@@ -33,12 +34,24 @@ namespace UnityTodo {
             
             void OnEnable() {
                 var tasksProp = serializedObject.FindProperty( nameof(tasks) );
-                _list = new ReorderableList( serializedObject, tasksProp, true, false, false, false );
+                _list = new ExposedReorderableList( serializedObject, tasksProp, true, false, false, false );
+                
                 _list.drawElementCallback += (rect, index, active, focused) => {
 
+                    
+                    // escape to cancel edite mode
+                    if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Escape) {
+                        _list.serializedProperty.GetArrayElementAtIndex( index ).FindPropertyRelative( nameof(Task.isEditing) ).boolValue = false;
+                        _list.ClearCache();
+                        _list.CacheIfNeeded();
+                        EditorApplication.delayCall += Repaint;
+                        Event.current.Use();
+
+                    }
                     if ((focused || active) && Event.current.type == EventType.KeyDown && Event.current.keyCode is KeyCode.Escape) {
                         _list.ClearSelection();
                     }
+                    
 
                     bool buttonClick() => GUI.Button( new Rect( rect.x + rect.width - 15, rect.y, 20, 20 ), EditorGUIUtility.FindTexture( "d__Menu" ), EditorStyles.iconButton );
                     bool contextMenuClick() => Event.current.type == EventType.ContextClick && rect.Contains( Event.current.mousePosition );
@@ -54,25 +67,30 @@ namespace UnityTodo {
                         menu.AddItem( new GUIContent("Delete Task"), false, () => {
                             _list.serializedProperty.DeleteArrayElementAtIndex( index );
                             _list.serializedProperty.serializedObject.ApplyModifiedProperties();
+                            Repaint();
                         } );
                         menu.AddItem( new GUIContent("Duplicate Task"), false, () => {
                             _list.serializedProperty.InsertArrayElementAtIndex( index );
                             _list.serializedProperty.serializedObject.ApplyModifiedProperties();
+                            Repaint();
                         } );
                         menu.AddItem( new GUIContent("Edit Task"), false, () => {
                             isEditingProp.boolValue = true;
                             _list.serializedProperty.serializedObject.ApplyModifiedProperties();
+                            Repaint();
                         } );
-                        if (progressProp.floatValue == 1) {
+                        if (progressProp.floatValue >= 1) {
                             menu.AddItem( new GUIContent("Mark Task Not Done"), false, () => {
                                 progressProp.floatValue = 0;
                                 _list.serializedProperty.serializedObject.ApplyModifiedProperties();
+                                Repaint();
                             } );
                         }
                         else {
                             menu.AddItem( new GUIContent("Mark Task Done"), false, () => {
                                 progressProp.floatValue = 1;
                                 _list.serializedProperty.serializedObject.ApplyModifiedProperties();
+                                Repaint();
                             } );
                         }
 
@@ -136,7 +154,7 @@ namespace UnityTodo {
                     EditorGUI.DrawRect( progRect, progFillCol );
                     progRect.x += 5;
                     progRect.y += 5;
-                    using (new GUIUtilities.GUIColor( progTextCol ))
+                    using (new GUIColor( progTextCol ))
                         EditorGUI.LabelField( progRect, $"<b><i>{(int)(progress * 100)}%</i></b>", GUIStyles.GetSmallLabel() );
                 }
 

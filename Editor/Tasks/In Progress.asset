@@ -16,7 +16,7 @@ MonoBehaviour:
   title: In Progress
   tasks:
   - title: Shortcuts
-    description: '* Save all
+    description: '- Save all
 
       * Remove Tasks
 
@@ -28,7 +28,7 @@ MonoBehaviour:
       * New Task
 
       * Unselect all by esc'
-    progress: 0
+    progress: 0.16666667
     isEditing: 0
   - title: Reorder Task Lists left/right
     description: 

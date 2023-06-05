@@ -35,7 +35,7 @@ namespace UnityTodo {
                     var isEditingProp = _list.serializedProperty.GetArrayElementAtIndex( index )
                         .FindPropertyRelative( nameof(Task.isEditing) );
                     
-                    bool buttonClick() => GUI.Button( new Rect( rect.x + rect.width - 15, rect.y, 20, 20 ), EditorGUIUtility.FindTexture( "d__Menu" ), EditorStyles.iconButton );
+                    bool buttonClick() => GUI.Button( new Rect( rect.x + rect.width - 15, rect.y, 20, 20 ), TaskList_Get_TaskMenuTex(), EditorStyles.iconButton );
                     bool contextMenuClick() => Event.current.type == EventType.ContextClick && rect.Contains( Event.current.mousePosition );
                     
                     if ( buttonClick() || contextMenuClick()) {

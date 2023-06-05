@@ -30,3 +30,8 @@ or if you don't have git, simply download the zip and extract it into your proje
 > tar -xf UnityTodo.zip -C Assets/Plugins
 > del UnityTodo.zip
 > ```
+
+
+## Tips
+* You can click on a task with mouse to enter edit mode.
+* You can access task's menu bar with right clicking the task (otherwise clicking the menu button (three dots) will do the same)

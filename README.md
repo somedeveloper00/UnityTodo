@@ -9,6 +9,7 @@
 * Copy task lists to json and back to the editor
 * Saves to file by default and shares with team members in git
 * Light mode and Dark mode support
+* Directory-based grouping of task lists (like the *workplace* feature of Trello. useful for when working on multiple projects in a single Unity session) *<sub>(current front image doesn't include this feature yet)</sub>*
 
 ## Installation
 clone the repository into your project's Assets/Plugins folder as a submodule:

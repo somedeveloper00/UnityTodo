@@ -30,3 +30,7 @@ MonoBehaviour:
     description: 
     progress: 1
     isEditing: 0
+  - title: Global Font Size
+    description: 
+    progress: 1
+    isEditing: 0

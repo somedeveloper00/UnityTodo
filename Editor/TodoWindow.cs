@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace UnityTodo {
     internal class TodoWindow : EditorWindow {
+        
         [MenuItem( "Window/Tasks" )]
         static void OpenWindow() {
             var window = GetWindow<TodoWindow>();
@@ -24,13 +25,13 @@ namespace UnityTodo {
 
         void OnGUI() {
             ensureTasksLoaded();
-
             drawToolbar();
             
             // horizontal scroll wheel
             if (Event.current.type == EventType.ScrollWheel && Event.current.modifiers == EventModifiers.Shift) {
-                mainScrollPos += new Vector2( Event.current.delta.y * 13, 0 );
+                mainScrollPos += new Vector2( Event.current.delta.y * Settings.HORIZONTAL_SCROLL_SPEED, 0 );
                 Event.current.Use();
+                Repaint();
             }
             
             using var scroll = new GUILayout.ScrollViewScope( mainScrollPos );

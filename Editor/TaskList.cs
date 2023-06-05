@@ -22,8 +22,8 @@ namespace UnityTodo {
 
         [CustomEditor(typeof(TaskList))]
         class editor : Editor {
+            
             [NonSerialized] ExposedReorderableList _list;
-
             [NonSerialized] Vector3 tasksScrollPos;
 
             void OnEnable() {
@@ -134,6 +134,10 @@ namespace UnityTodo {
                     }
                 };
                 _list.footerHeight = 30;
+                
+                
+                _list.ClearCache();
+                _list.CacheIfNeeded();
             }
 
             public override void OnInspectorGUI() {

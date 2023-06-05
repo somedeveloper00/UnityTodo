@@ -15,6 +15,18 @@ MonoBehaviour:
   order: 2
   title: In Progress
   tasks:
+  - title: Reorder Task Lists left/right
+    description: 
+    progress: 0
+    isEditing: 0
+  - title: '[Bug] "Move To" options not updating as they should'
+    description: they don't update after deleting a task list
+    progress: 0
+    isEditing: 0
+  - title: Add object reference pinning
+    description: 
+    progress: 0
+    isEditing: 0
   - title: Shortcuts
     description: '- Save all
 
@@ -29,12 +41,4 @@ MonoBehaviour:
 
       * Unselect all by esc'
     progress: 0.16666667
-    isEditing: 0
-  - title: Reorder Task Lists left/right
-    description: 
-    progress: 0
-    isEditing: 0
-  - title: '[Bug] "Move To" options not updating as they should'
-    description: they don't update after deleting a task list
-    progress: 0
     isEditing: 0

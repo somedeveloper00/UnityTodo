@@ -15,10 +15,6 @@ MonoBehaviour:
   order: 1
   title: Backlog
   tasks:
-  - title: Add object reference pinning
-    description: 
-    progress: 0
-    isEditing: 0
   - title: Add comment support for each Task
     description: 
     progress: 0

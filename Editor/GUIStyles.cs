@@ -143,24 +143,34 @@ namespace UnityTodo {
             return _taskList_DeleteTex;
         }
 
-        [NonSerialized] static Texture2D _taskListCopyTex;
+        [NonSerialized] static Texture2D _taskList_CopyTex;
         public static Texture2D TaskList_GetCopyTex() {
-            if (_taskListCopyTex == null) {
-                _taskListCopyTex = EditorGUIUtility.isProSkin
+            if (_taskList_CopyTex == null) {
+                _taskList_CopyTex = EditorGUIUtility.isProSkin
                     ? EditorGUIUtility.FindTexture( "d_Clipboard" )
                     : EditorGUIUtility.FindTexture( "Clipboard" );
             }
-            return _taskListCopyTex;
+            return _taskList_CopyTex;
         }
 
-        [NonSerialized] static Texture2D _taskListPasteTex;
+        [NonSerialized] static Texture2D _taskList_PasteTex;
         public static Texture2D TaskList_GetPasteTex() {
-            if (_taskListPasteTex == null) {
-                _taskListPasteTex = EditorGUIUtility.isProSkin
+            if (_taskList_PasteTex == null) {
+                _taskList_PasteTex = EditorGUIUtility.isProSkin
                     ? EditorGUIUtility.FindTexture( "d_Toolbar Plus More" )
                     : EditorGUIUtility.FindTexture( "Toolbar Plus More" );
             }
-            return _taskListPasteTex;
+            return _taskList_PasteTex;
+        }
+
+        [NonSerialized] static Texture2D _taskList_TaskMenuTex;
+        public static Texture2D TaskList_Get_TaskMenuTex() {
+            if (_taskList_TaskMenuTex == null) {
+                _taskList_TaskMenuTex = EditorGUIUtility.isProSkin
+                    ? EditorGUIUtility.FindTexture( "d__Menu" )
+                    : EditorGUIUtility.FindTexture( "_Menu" );
+            }
+            return _taskList_TaskMenuTex;
         }
 
 #endregion

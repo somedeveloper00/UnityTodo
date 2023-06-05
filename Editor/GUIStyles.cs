@@ -285,8 +285,38 @@ namespace UnityTodo {
         }
 #endregion
 
+#region TODO Window
+        
+        [NonSerialized] static Texture2D _todoWidnow_TaskListDirectoriesTex;
+        public static Texture2D TodoWindow_GetTaskListDirectoriesTex() {
+            if (_todoWidnow_TaskListDirectoriesTex == null) {
+                _todoWidnow_TaskListDirectoriesTex = EditorGUIUtility.isProSkin
+                    ? EditorGUIUtility.FindTexture( "d_Folder Icon" )
+                    : EditorGUIUtility.FindTexture( "Folder Icon" );
+            }
+            return _todoWidnow_TaskListDirectoriesTex;
+        }
+        [NonSerialized] static GUIStyle _todoWindow_TaskListPathItem;
+        public static GUIStyle TodoWindow_GetTaskListPathItem() {
+            if (_todoWindow_TaskListPathItem == null) {
+                var style = new GUIStyle( EditorStyles.miniButton );
+                style.fontSize = SMALL_FONT_SIZE;
+                style.alignment = TextAnchor.MiddleCenter;
+                style.normal.background = EditorGUIUtility.FindTexture( "sv_label_0" );
+                style.fontStyle = FontStyle.Bold;
+                style.normal.textColor = Color.black;
+                _todoWindow_TaskListPathItem = style;
+            }
+
+            return _todoWindow_TaskListPathItem;
+        }
+
+#endregion
+
+#region Texture Manips
+
         public static Texture2D CreateTexture(Color color) {
-            var tex = new Texture2D( Texture2D.normalTexture.height, Texture2D.normalTexture.width, Texture2D.normalTexture.format, false );
+            var tex = new Texture2D( Texture2D.normalTexture.width, Texture2D.normalTexture.height, Texture2D.normalTexture.format, false );
             // set all pixels to clear
             var cols = new Color[16];
             Array.Fill( cols, color, 0, 16 );
@@ -294,5 +324,16 @@ namespace UnityTodo {
             tex.Apply();
             return tex;
         }
+
+        public static Texture2D MultiplyTextureColor(Texture2D texture, Color color) {
+            var tex = new Texture2D( texture.width, texture.height, texture.format, false );
+            var cols = texture.GetPixels();
+            for (var i = 0; i < cols.Length; i++) cols[i] *= color;
+            tex.SetPixels( cols );
+            tex.Apply();
+            return tex;
+        }
+
+#endregion
     }
 }

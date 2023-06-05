@@ -34,3 +34,7 @@ MonoBehaviour:
     description: 
     progress: 1
     isEditing: 0
+  - title: Fixed Menu Button in light mode
+    description: 
+    progress: 1
+    isEditing: 0

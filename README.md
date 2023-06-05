@@ -1,7 +1,6 @@
 # UnityTodo (Editor-Only)
 
-![image](https://github.com/somedeveloper00/UnityTodo/assets/79690923/584410f2-56dc-4e53-b4aa-a0454beda234)
-![image](https://github.com/somedeveloper00/UnityTodo/assets/79690923/248f4b7f-1633-4a50-a7c7-070a9a9ba82a)
+![image](https://github.com/somedeveloper00/UnityTodo/assets/79690923/60399fe8-f1e8-4b75-b921-c3dd79fa4a8f)
 
 
 

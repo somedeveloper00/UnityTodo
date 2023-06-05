@@ -17,6 +17,18 @@ namespace UnityTodo {
 
         [NonSerialized] List<(TaskList taskList, Editor editor)> taskEditors;
         [NonSerialized] Vector2 mainScrollPos;
+        List<TaskListDirectory> taskListPaths = new();
+
+        [Serializable]
+        struct TaskListDirectory {
+            public string path;
+            public string name;
+
+            public TaskListDirectory(string directory, string substring) {
+                path = directory;
+                name = substring;
+            }
+        }
 
         void OnDestroy() {
             forceSaveAllTaskEditors();
@@ -90,7 +102,49 @@ namespace UnityTodo {
                         taskEditor.editor.serializedObject.Update();
                     }
                 }
+
+                GUILayout.Space( 20 );
+                drawDirectorySelection();
+
+            }
+        }
+
+        void drawDirectorySelection() {
+            
+            GUILayout.Label( new GUIContent("Directories:", GUIStyles.TodoWindow_GetTaskListDirectoriesTex()), GUILayout.Width( 80 ), GUILayout.Height( 20 ) );
+            
+            using (var scope = new EditorGUILayout.HorizontalScope( EditorStyles.selectionRect, GUILayout.ExpandWidth( false ) )) {
                 
+                for (var i = 0; i < taskListPaths.Count; i++) {
+                    if (!Directory.Exists( taskListPaths[i].path )) {
+                        taskListPaths.RemoveAt( i-- );
+                        continue;
+                    }
+                    
+                    if (GUILayout.Button( new GUIContent( taskListPaths[i].name ), GUIStyles.TodoWindow_GetTaskListPathItem(), GUILayout.ExpandWidth( false ) )) {
+                        taskListPaths.RemoveAt( i );
+                        forceSaveAllTaskEditors();
+                        forceReloadAllTaskEditors();
+                        return;
+                    }
+                }
+
+                if (GUILayout.Button(
+                        new GUIContent( EditorGUIUtility.FindTexture( "d_icon dropdown" ),
+                            "Add new directory of Task Lists to show" ), EditorStyles.miniButton, GUILayout.Width( 25 ) )) 
+                {
+                    var menu = new GenericMenu();
+                    foreach (var directory in IOUtils.FindAllDirectoriesWithTaskList()) {
+                        menu.AddItem( new GUIContent( directory ), taskListPaths.Any( t => t.path == directory ), () => {
+                            if (taskListPaths.All( t => t.path != directory )) {
+                                taskListPaths.Add( new (directory, new DirectoryInfo(directory).Name ) );
+                                forceSaveAllTaskEditors();
+                                forceReloadAllTaskEditors();
+                            }
+                        } );
+                    }
+                    menu.ShowAsContext();
+                }
             }
         }
 
@@ -132,9 +186,10 @@ namespace UnityTodo {
             // reimport path
             AssetDatabase.Refresh();
             AssetDatabase.ImportAsset( Settings.TODO_DIRECTORY_PATH, ImportAssetOptions.ImportRecursive );
-            taskEditors = Directory.GetFiles( Settings.TODO_DIRECTORY_PATH, "*.asset", SearchOption.AllDirectories )
+            taskEditors =
+                taskListPaths
+                .SelectMany( tpath => IOUtils.GetAllTaskListsAtPath(tpath.path) )
                 .Select( AssetDatabase.LoadAssetAtPath<TaskList> )
-                .Where( elem => elem != null )
                 .OrderBy( task => task.order )
                 .Select( task => (task, Editor.CreateEditor( task )) )
                 .ToList();

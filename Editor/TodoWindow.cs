@@ -95,7 +95,7 @@ namespace UnityTodo {
                 GUILayout.Label( "Welcome! Let's Get You Started!", GetBigLabel() );
                 GUILayout.Space( 30 );
                 GUILayout.Label(
-                    "You're seeing this because no Task List Directory is open. You can use the following buttons to get started.",
+                    "You're seeing this because no Task List Directory is open. You can use the bellow buttons to get started.",
                     GetNormalLabel() );
                 using (new GUILayout.HorizontalScope()) {
                     GUILayout.FlexibleSpace();

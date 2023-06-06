@@ -42,3 +42,7 @@ MonoBehaviour:
     description: 
     progress: 1
     isEditing: 0
+  - title: Assembly only in Editor
+    description: 
+    progress: 1
+    isEditing: 0

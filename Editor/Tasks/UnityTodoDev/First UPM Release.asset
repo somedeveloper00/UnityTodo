@@ -15,16 +15,6 @@ MonoBehaviour:
   order: 2
   title: First UPM Release
   tasks:
-  - title: Enhance Active Directories
-    description: "- support for save/load in Editor Prefs\n- show warning initially
-      when no directory is opened (offer a button to open one) \n- Separate button
-      for new task list per directory"
-    progress: 1
-    isEditing: 0
-  - title: Remove edit button on top-left of each task
-    description: 
-    progress: 0
-    isEditing: 0
   - title: '[Bug] "Move To" options not updating as they should'
     description: they don't update after deleting a task list
     progress: 0
@@ -42,24 +32,6 @@ MonoBehaviour:
     description: serialize Object ref by guid as string
     progress: 0
     isEditing: 0
-  - title: Shortcuts
-    description: '- Save all on Ctrl+S
-
-      * Remove Tasks on BACKSPACE
-
-      *
-      Save Task on ENTER
-
-      * Duplicate Tasks on CTRL+D
-
-      * Move Tasks to
-      Right/Left on CTRL+ARROW
-
-      * New Task on N
-
-      * Unselect all by ESC'
-    progress: 0.14285715
-    isEditing: 0
   - title: Turn project into a UPM package
     description: 
     progress: 0
@@ -69,7 +41,22 @@ MonoBehaviour:
       (so slider would fill based on completed bulletpoints)
     progress: 0
     isEditing: 0
-  - title: Drag and Drop tasks to left/right
+  - title: Shortcuts
+    description: '- Save all on Ctrl+S
+
+      - Save Task on ENTER
+
+      - Unselect
+      all by ESC '
+    progress: 1
+    isEditing: 0
+  - title: Enhance Active Directories
+    description: "- support for save/load in Editor Prefs\n- show warning initially
+      when no directory is opened (offer a button to open one) \n- Separate button
+      for new task list per directory\n- new directory"
+    progress: 1
+    isEditing: 0
+  - title: Remove edit button on top-left of each task
     description: 
-    progress: 0
+    progress: 1
     isEditing: 0

@@ -49,3 +49,7 @@ MonoBehaviour:
     description: 
     progress: 0
     isEditing: 0
+  - title: Add context menu option for any Asset to be pinned to a new Task
+    description: 
+    progress: 0
+    isEditing: 0

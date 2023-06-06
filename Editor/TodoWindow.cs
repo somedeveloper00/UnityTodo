@@ -92,7 +92,7 @@ namespace UnityTodo {
 
         void drawWelcome() {
             using (new GUILayout.VerticalScope()) {
-                GUILayout.Label( "Welcome! Let's Get You Started!", GetBigLabel() );
+                GUILayout.Label( "Let's Get You Started!", GetBigLabel() );
                 GUILayout.Space( 30 );
                 GUILayout.Label(
                     "You're seeing this because no Task List Directory is open. You can use the bellow buttons to get started.",
@@ -172,9 +172,7 @@ namespace UnityTodo {
                     }
                 }
 
-                if (GUILayout.Button(
-                        new GUIContent( EditorGUIUtility.FindTexture( "d_icon dropdown" ),
-                            "Add new directory of Task Lists to show" ), EditorStyles.miniButton,
+                if (GUILayout.Button( new GUIContent( TodoWindow_GetNewTaskListDirTex(), "Add new directory of Task Lists to show" ), EditorStyles.miniButton,
                         GUILayout.Width( 25 ) )) 
                 {
                     OpenTaskListSelectionGenericMenu();

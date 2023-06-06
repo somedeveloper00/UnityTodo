@@ -306,6 +306,16 @@ namespace UnityTodo {
             }
             return _todoWidnow_NewTaskListTex;
         }
+
+        [NonSerialized] static Texture2D _todoWidnow_NewTaskListDirTex;
+        public static Texture2D TodoWindow_GetNewTaskListDirTex() {
+            if (_todoWidnow_NewTaskListDirTex == null) {
+                _todoWidnow_NewTaskListDirTex = EditorGUIUtility.isProSkin
+                    ? EditorGUIUtility.FindTexture( "d_icon dropdown" )
+                    : EditorGUIUtility.FindTexture( "icon dropdown" );
+            }
+            return _todoWidnow_NewTaskListDirTex;
+        }
         
         [NonSerialized] static GUIStyle _todoWindow_TaskListPathItem;
         public static GUIStyle TodoWindow_GetTaskListPathItem() {

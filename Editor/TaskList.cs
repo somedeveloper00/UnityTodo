@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditorInternal;
 using UnityEngine;
 using static UnityTodo.GUIStyles;
 
@@ -36,10 +37,10 @@ namespace UnityTodo {
                     var isEditingProp = _list.serializedProperty.GetArrayElementAtIndex( index )
                         .FindPropertyRelative( nameof(Task.isEditing) );
                     
-                    bool buttonClick() => GUI.Button( new Rect( rect.x + rect.width - 15, rect.y, 20, 20 ), TaskList_Get_TaskMenuTex(), EditorStyles.iconButton );
+                    bool ContextButtonClick() => GUI.Button( new Rect( rect.x + rect.width - 15, rect.y, 20, 20 ), TaskList_Get_TaskMenuTex(), EditorStyles.iconButton );
                     bool contextMenuClick() => Event.current.type == EventType.ContextClick && rect.Contains( Event.current.mousePosition );
                     
-                    if ( buttonClick() || contextMenuClick()) {
+                    if ( ContextButtonClick() || contextMenuClick()) {
                         Event.current.Use();
                         var progressProp = _list.serializedProperty.GetArrayElementAtIndex( index )
                             .FindPropertyRelative( nameof(Task.progress) );
@@ -55,11 +56,22 @@ namespace UnityTodo {
                             _list.serializedProperty.serializedObject.ApplyModifiedProperties();
                             Repaint();
                         } );
-                        menu.AddItem( new GUIContent("Edit Task"), false, () => {
-                            isEditingProp.boolValue = true;
-                            _list.serializedProperty.serializedObject.ApplyModifiedProperties();
-                            Repaint();
-                        } );
+                        if (isEditingProp.boolValue) {
+                            menu.AddItem( new GUIContent("Save Task"), false, () => {
+                                isEditingProp.boolValue = false;
+                                _list.serializedProperty.serializedObject.ApplyModifiedProperties();
+                                GUIUtility.keyboardControl = 0;
+                                GUIUtility.hotControl = 0;
+                                Repaint();
+                            } );
+                        }
+                        else {
+                            menu.AddItem( new GUIContent("Edit Task"), false, () => {
+                                isEditingProp.boolValue = true;
+                                _list.serializedProperty.serializedObject.ApplyModifiedProperties();
+                                Repaint();
+                            } );
+                        }
                         if (progressProp.floatValue >= 1) {
                             menu.AddItem( new GUIContent("Mark Task Not Done"), false, () => {
                                 progressProp.floatValue = 0;
@@ -102,12 +114,29 @@ namespace UnityTodo {
                     
                     // check for click anywhere to enter edit mode
                     // the reason for doing it here is EditorGUI.PropertyField uses up the mouse event 
-                    bool clicked() => Event.current.type == EventType.MouseUp && Event.current.button == 0;
+                    bool leftClickedAnywhere() => Event.current.type == EventType.MouseUp && Event.current.button == 0;
                     bool mouseOverProp() => rect.Contains( Event.current.mousePosition );
-                    var wantsToGoEditMode = !isEditingProp.boolValue && clicked() && mouseOverProp();
-                    
+                    var wantsToGoEditMode = !isEditingProp.boolValue && leftClickedAnywhere() && mouseOverProp();
+
+                    var enterClicked = Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Return;
+
                     EditorGUI.PropertyField( rect, tasksProp.GetArrayElementAtIndex( index ) );
 
+                    // save with ENTER if title has focus
+                    if (isEditingProp.boolValue) {
+                        if (GUI.GetNameOfFocusedControl() is Task.TITLE_CONTROL_NAME or Task.PROGRESS_CONTROL_NAME && enterClicked) {
+                            isEditingProp.boolValue = false;
+                            _list.serializedProperty.serializedObject.ApplyModifiedProperties();
+                            EditorWindow.focusedWindow?.Repaint();
+                            _list.ClearCache();
+                            _list.CacheIfNeeded();
+                            Event.current.Use();
+                            GUIUtility.keyboardControl = 0;
+                            GUIUtility.hotControl = 0;
+                            return;
+                        }
+                    }
+                    
                     // check if it's already in edit mode
                     if (wantsToGoEditMode) {
                         if (!isEditingProp.boolValue) {
@@ -120,6 +149,7 @@ namespace UnityTodo {
                             _list.CacheIfNeeded();
                         }
                     }
+                    
 
                 };
                 _list.elementHeightCallback += index =>
@@ -204,6 +234,9 @@ namespace UnityTodo {
                 {
                     // cancel edit mode
                     if (Event.current.type == EventType.KeyDown && Event.current.keyCode is KeyCode.Escape) {
+                        _list.ClearSelection();
+                        GUIUtility.hotControl = 0;
+                        GUIUtility.keyboardControl = 0;
                         for (int i = 0; i < _list.serializedProperty.arraySize; i++) {
                             _list.serializedProperty.GetArrayElementAtIndex( i )
                                 .FindPropertyRelative( nameof(Task.isEditing) ).boolValue = false;

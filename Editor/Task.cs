@@ -1,4 +1,5 @@
 using System;
+using Palmmedia.ReportGenerator.Core.Reporting.Builders;
 using UnityEditor;
 using UnityEngine;
 using static UnityTodo.GUIStyles;
@@ -10,6 +11,11 @@ namespace UnityTodo {
         public string description;
         public float progress;
         public bool isEditing = true;
+
+
+        public const string TITLE_CONTROL_NAME = "task-title";
+        public const string DESCRIPTION_CONTROL_NAME = "task-description";
+        public const string PROGRESS_CONTROL_NAME = "task-progress";
 
         [CustomPropertyDrawer(typeof(Task))]
         class drawer : PropertyDrawer {
@@ -23,32 +29,17 @@ namespace UnityTodo {
                 var isEditingProp = property.FindPropertyRelative( nameof(isEditing) );
                 var progressProp = property.FindPropertyRelative( nameof(progress) );
 
-                    
+                
                 using (new EditorGUI.PropertyScope( position, label, property )) {
                     
                     position.height = EditorGUIUtility.singleLineHeight;
                     position.y += 4;
-                    
-                    // edit button
-                    var editRect = new Rect( position.x, position.y, 25, 25 );
-                    var editTexture = isEditingProp.boolValue
-                        ? EditorGUIUtility.FindTexture( "SaveAs@2x" )
-                        : EditorGUIUtility.FindTexture( "d_editicon.sml" );
-                    if (GUI.Button( editRect, editTexture )) 
-                    {
-                        isEditingProp.boolValue = !isEditingProp.boolValue;
-                        if (!isEditingProp.boolValue) {
-                            property.serializedObject.ApplyModifiedProperties();
-                        }
-                    }
 
-                    position.x += 30;
-                    position.width -= 50;
-                    
-                    if (Event.current.type == EventType.Repaint)
-                        lastTitleWidth = position.width;
-                    
                     // title prop
+                    position.x += 25;
+                    position.width -= 50;
+                    if (Event.current.type == EventType.Repaint)
+                        lastTitleWidth = position.width; // save for later height calculation (used for word wrap)
                     position.height += 10;
                     var titleText = progressProp.floatValue < 1 || isEditingProp.boolValue ? titleProp.stringValue : StrikeThrough( titleProp.stringValue );
                     var titleStyle = isEditingProp.boolValue
@@ -57,12 +48,13 @@ namespace UnityTodo {
                     var titleHeight = titleStyle.CalcHeight( new GUIContent( titleText ), position.width );
                     position.height = titleHeight;
                     using (var check = new EditorGUI.ChangeCheckScope()) {
+                        GUI.SetNextControlName( TITLE_CONTROL_NAME );
                         var r = EditorGUI.TextField( position, titleText, titleStyle );
                         if (check.changed && isEditingProp.boolValue) 
                             titleProp.stringValue = r;
                     }
                     position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
-                    position.x -= 30;
+                    position.x -= 25;
                     position.width += 50 - 15;
                     
                     if (Event.current.type == EventType.Repaint)
@@ -79,6 +71,7 @@ namespace UnityTodo {
                             : descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), position.width );
                         position.height = height;
                         using (var check = new EditorGUI.ChangeCheckScope()) {
+                            GUI.SetNextControlName( DESCRIPTION_CONTROL_NAME );
                             var r = EditorGUI.TextArea( position, descriptionProp.stringValue, descStyle );
                             if (check.changed && isEditingProp.boolValue) 
                                 descriptionProp.stringValue = r;
@@ -90,6 +83,7 @@ namespace UnityTodo {
                     // progress prop
                     position.height = EditorGUIUtility.singleLineHeight;
                     if (isEditingProp.boolValue) {
+                        GUI.SetNextControlName( PROGRESS_CONTROL_NAME );
                         progressProp.floatValue = EditorGUI.Slider( position, progressProp.floatValue, 0, 1 );
                     }
                     else {

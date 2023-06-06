@@ -167,7 +167,7 @@ namespace UnityTodo {
                         taskListPaths.RemoveAt( i );
                         forceSaveAllTaskEditors();
                         forceReloadAllTaskEditors();
-                        SaveActiveDirectories( taskListPaths.Select( t => t.path ).ToList() );
+                        SaveActiveDirectoriesToPrefs( taskListPaths.Select( t => t.path ).ToList() );
                         return;
                     }
                 }
@@ -186,12 +186,22 @@ namespace UnityTodo {
                 menu.AddItem( new GUIContent( directory ), taskListPaths.Any( t => t.path == directory ), () => {
                     if (taskListPaths.All( t => t.path != directory )) {
                         taskListPaths.Add( new(directory) );
-                        SaveActiveDirectories( taskListPaths.Select( t => t.path ).ToList() );
+                        SaveActiveDirectoriesToPrefs( taskListPaths.Select( t => t.path ).ToList() );
                         forceSaveAllTaskEditors();
                         forceReloadAllTaskEditors();
                     }
                 } );
             }
+            menu.AddItem( new GUIContent("New"), false, () => {
+                var path = EditorUtility.OpenFolderPanel( "Select Task List Directory", Application.dataPath, "" );
+                if (Directory.Exists( path )) {
+                    forceSaveAllTaskEditors();
+                    path = path.Replace( Application.dataPath, "Assets" ); // make path relative
+                    taskListPaths.Add( new(path) );
+                    SaveActiveDirectoriesToPrefs( taskListPaths.Select( t => t.path ).ToList() );
+                    addNewTaskList( path );
+                }
+            } );
 
             menu.ShowAsContext();
         }
@@ -200,7 +210,7 @@ namespace UnityTodo {
             forceSaveAllTaskEditors();
             foreach (var dir in FindAllDirectoriesWithTaskList()) 
                 taskListPaths.Add( new TaskListDirectory( dir ) );
-            SaveActiveDirectories( taskListPaths.Select( t => t.path ).ToList() );
+            SaveActiveDirectoriesToPrefs( taskListPaths.Select( t => t.path ).ToList() );
             forceReloadAllTaskEditors();
         }
 
@@ -253,7 +263,7 @@ namespace UnityTodo {
 
         void ensureTaskListPathsLoaded() {
             if (taskListPaths == null) {
-                taskListPaths = GetActiveDirectories().Select( s => new TaskListDirectory( s ) ).ToList();
+                taskListPaths = GetActiveDirectoriesFromPrefs().Select( s => new TaskListDirectory( s ) ).ToList();
                 Repaint();
                 Debug.Log( $"loaded all" );
             } 

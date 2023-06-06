@@ -45,3 +45,7 @@ MonoBehaviour:
       on a serializefield color) for the background of the task)
     progress: 0
     isEditing: 0
+  - title: Drag and Drop tasks to left/right
+    description: 
+    progress: 0
+    isEditing: 0

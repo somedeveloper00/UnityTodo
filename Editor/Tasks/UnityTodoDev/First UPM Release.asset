@@ -32,13 +32,13 @@ MonoBehaviour:
     description: serialize Object ref by guid as string
     progress: 0
     isEditing: 0
-  - title: Turn project into a UPM package
-    description: 
-    progress: 0
-    isEditing: 0
   - title: Bulletpoints
     description: provide option to whether use manual slider or bullet-point type
       (so slider would fill based on completed bulletpoints)
+    progress: 0
+    isEditing: 0
+  - title: Turn project into a UPM package
+    description: 
     progress: 0
     isEditing: 0
   - title: Shortcuts

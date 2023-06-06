@@ -1,9 +1,29 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
 
 namespace UnityTodo {
     internal static class IOUtils {
+
+        
+        [Serializable] struct List_string {
+            public List<string> strings;
+        }
+        
+        public static List<string> GetActiveDirectories() {
+            var r = EditorPrefs.GetString( "unity-todo.activedirs", "{}" );
+            return JsonUtility.FromJson<List_string>( r ).strings ?? new List<string>();
+        }
+        
+        public static void SaveActiveDirectories(List<string> activeDirectories) {
+            var ls = new List_string { strings = activeDirectories };
+            var r = JsonUtility.ToJson( ls );
+            EditorPrefs.SetString( "unity-todo.activedirs", r );
+        }
+
         public static List<string> FindAllDirectoriesWithTaskList() {
             var taskListDirs = new HashSet<string>();
             var guids = UnityEditor.AssetDatabase.FindAssets( "t:TaskList" );

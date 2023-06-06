@@ -14,7 +14,8 @@ namespace UnityTodo {
         [CustomPropertyDrawer(typeof(Task))]
         class drawer : PropertyDrawer {
 
-            float lastDescriptionWidth;
+            [NonSerialized] float lastTitleWidth = 280;
+            [NonSerialized] float lastDescriptionWidth = 280;
             
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
                 var titleProp = property.FindPropertyRelative( nameof(title) );
@@ -45,7 +46,7 @@ namespace UnityTodo {
                     position.width -= 50;
                     
                     if (Event.current.type == EventType.Repaint)
-                        lastDescriptionWidth = position.width;
+                        lastTitleWidth = position.width;
                     
                     // title prop
                     position.height += 10;
@@ -63,6 +64,9 @@ namespace UnityTodo {
                     position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
                     position.x -= 30;
                     position.width += 50 - 15;
+                    
+                    if (Event.current.type == EventType.Repaint)
+                        lastDescriptionWidth = position.width;
                     
                     // description prop
                     if (isEditingProp.boolValue || !string.IsNullOrEmpty( descriptionProp.stringValue )) {
@@ -117,7 +121,7 @@ namespace UnityTodo {
                 var titleStyle = isEditingProp.boolValue
                     ? Task_GetTitleTextEdit()
                     : progressProp.floatValue < 1 ? Task_GetUnfinishedTitleText() : Task_GetFinishedTitleText();
-                h += titleStyle.CalcHeight( new GUIContent( titleProp.stringValue ), lastDescriptionWidth);
+                h += titleStyle.CalcHeight( new GUIContent( titleProp.stringValue ), lastTitleWidth);
                 h += EditorGUIUtility.standardVerticalSpacing;
 
                 // desc

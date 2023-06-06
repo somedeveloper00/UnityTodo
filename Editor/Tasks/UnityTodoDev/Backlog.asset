@@ -19,9 +19,8 @@ MonoBehaviour:
     description: 
     progress: 0
     isEditing: 0
-  - title: Bulletpoints
-    description: provide option to whether use manual slider or bullet-point type
-      (so slider would fill based on completed bulletpoints)
+  - title: Sync with Github's Project
+    description: 
     progress: 0
     isEditing: 0
   - title: Sync with Trello
@@ -33,16 +32,16 @@ MonoBehaviour:
       at backlog
     progress: 0
     isEditing: 0
-  - title: Task Color
-    description: Add option to pin color to a task (preferrably a gradient based
-      on a serializefield color) for the background of the task)
-    progress: 0
-    isEditing: 0
   - title: Open Task Editor in modal window
     description: 
     progress: 0
     isEditing: 0
   - title: Export/Import bulltetpoint formatted tasks
     description: 
+    progress: 0
+    isEditing: 0
+  - title: Task Color
+    description: Add option to pin color to a task (preferrably a gradient based
+      on a serializefield color) for the background of the task)
     progress: 0
     isEditing: 0

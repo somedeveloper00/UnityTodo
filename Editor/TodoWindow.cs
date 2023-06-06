@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using static UnityTodo.GUIStyles;
+using static UnityTodo.IOUtils;
 
 namespace UnityTodo {
     internal class TodoWindow : EditorWindow {
@@ -15,18 +17,18 @@ namespace UnityTodo {
             window.Show();
         }
 
-        [NonSerialized] List<(TaskList taskList, Editor editor)> taskEditors;
-        [NonSerialized] Vector2 mainScrollPos;
-        List<TaskListDirectory> taskListPaths = new();
+        List<(TaskList taskList, Editor editor)> taskEditors;
+        [SerializeField] Vector2 mainScrollPos;
+        [SerializeField] List<TaskListDirectory> taskListPaths;
 
         [Serializable]
         struct TaskListDirectory {
             public string path;
             public string name;
 
-            public TaskListDirectory(string directory, string substring) {
+            public TaskListDirectory(string directory) {
                 path = directory;
-                name = substring;
+                name = new DirectoryInfo( directory ).Name;
             }
         }
 
@@ -36,8 +38,11 @@ namespace UnityTodo {
         }
 
         void OnGUI() {
+            ensureTaskListPathsLoaded();
             ensureTasksLoaded();
             drawToolbar();
+            
+            GUILayout.Space( 5 );
             
             // horizontal scroll wheel
             if (Event.current.type == EventType.ScrollWheel && Event.current.modifiers == EventModifiers.Shift) {
@@ -48,26 +53,63 @@ namespace UnityTodo {
             
             using var scroll = new GUILayout.ScrollViewScope( mainScrollPos );
             mainScrollPos = scroll.scrollPosition;
-            
 
-            using (new GUILayout.HorizontalScope()) {
-                for (var i = 0; i < taskEditors.Count; i++) {
-                    var task = taskEditors[i];
-                    drawTask( task );
-                    if (!task.taskList) {
-                        taskEditors.RemoveAt( i );
-                        AssetDatabase.DeleteAsset( AssetDatabase.GetAssetPath( task.taskList ) );
-                        AssetDatabase.Refresh();
+
+            if (taskEditors.Count > 0) {
+                using (new GUILayout.HorizontalScope()) {
+                    for (var i = 0; i < taskEditors.Count; i++) {
+                        var task = taskEditors[i];
+                        drawTask( task );
+                        if (!task.taskList) { taskEditors.RemoveAt( i-- ); }
+                    }
+
+                    using (new GUILayout.VerticalScope()) {
+                        foreach (var path in taskListPaths) {
+                            var label = taskListPaths.Count == 1 ? " New Task List" : $" New Task List <i>({path.name})</i>";
+                            if (GUILayout.Button( new GUIContent( label, TodoWindow_GetNewTaskListTex() ),
+                                    TodoWindow_GetNewTaskList(),
+                                    GUILayout.Height( 30 ) )) 
+                            {
+                                addNewTaskList( path.path );
+                            }
+                        }
+                        // Repaint();
                     }
                 }
 
-                if (GUILayout.Button( new GUIContent(" New Task List", EditorGUIUtility.FindTexture( "d_CreateAddNew" )),
-                        GUILayout.Height( 30 ) )) 
-                {
-                    addNewTaskList();
+            }
+            else {
+                GUILayout.Space(100);
+                using (new GUILayout.HorizontalScope(  )) {
+                    GUILayout.FlexibleSpace();
+                    drawWelcome();
+                    GUILayout.FlexibleSpace();
                 }
+                GUILayout.FlexibleSpace();
             }
 
+        }
+
+        void drawWelcome() {
+            using (new GUILayout.VerticalScope()) {
+                GUILayout.Label( "Welcome! Let's Get You Started!", GetBigLabel() );
+                GUILayout.Space( 30 );
+                GUILayout.Label(
+                    "You're seeing this because no Task List Directory is open. You can use the following buttons to get started.",
+                    GetNormalLabel() );
+                using (new GUILayout.HorizontalScope()) {
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button( "Open A Task List Directory", GUILayout.Height( 30 ) )) {
+                        OpenTaskListSelectionGenericMenu();
+                    }
+
+                    if (GUILayout.Button( "Open All Available Task List Directories", GUILayout.Height( 30 ) )) {
+                        OpenAllTaskListDirectories();
+                    }
+
+                    GUILayout.FlexibleSpace();
+                }
+            }
         }
 
         void drawToolbar() {
@@ -111,7 +153,7 @@ namespace UnityTodo {
 
         void drawDirectorySelection() {
             
-            GUILayout.Label( new GUIContent("Directories:", GUIStyles.TodoWindow_GetTaskListDirectoriesTex()), GUILayout.Width( 80 ), GUILayout.Height( 20 ) );
+            GUILayout.Label( new GUIContent("Directories:", TodoWindow_GetTaskListDirectoriesTex()), GUILayout.Width( 80 ), GUILayout.Height( 20 ) );
             
             using (var scope = new EditorGUILayout.HorizontalScope( EditorStyles.selectionRect, GUILayout.ExpandWidth( false ) )) {
                 
@@ -121,31 +163,47 @@ namespace UnityTodo {
                         continue;
                     }
                     
-                    if (GUILayout.Button( new GUIContent( taskListPaths[i].name ), GUIStyles.TodoWindow_GetTaskListPathItem(), GUILayout.ExpandWidth( false ) )) {
+                    if (GUILayout.Button( new GUIContent( taskListPaths[i].name ), TodoWindow_GetTaskListPathItem(), GUILayout.ExpandWidth( false ) )) {
                         taskListPaths.RemoveAt( i );
                         forceSaveAllTaskEditors();
                         forceReloadAllTaskEditors();
+                        SaveActiveDirectories( taskListPaths.Select( t => t.path ).ToList() );
                         return;
                     }
                 }
 
                 if (GUILayout.Button(
                         new GUIContent( EditorGUIUtility.FindTexture( "d_icon dropdown" ),
-                            "Add new directory of Task Lists to show" ), EditorStyles.miniButton, GUILayout.Width( 25 ) )) 
+                            "Add new directory of Task Lists to show" ), EditorStyles.miniButton,
+                        GUILayout.Width( 25 ) )) 
                 {
-                    var menu = new GenericMenu();
-                    foreach (var directory in IOUtils.FindAllDirectoriesWithTaskList()) {
-                        menu.AddItem( new GUIContent( directory ), taskListPaths.Any( t => t.path == directory ), () => {
-                            if (taskListPaths.All( t => t.path != directory )) {
-                                taskListPaths.Add( new (directory, new DirectoryInfo(directory).Name ) );
-                                forceSaveAllTaskEditors();
-                                forceReloadAllTaskEditors();
-                            }
-                        } );
-                    }
-                    menu.ShowAsContext();
+                    OpenTaskListSelectionGenericMenu();
                 }
             }
+        }
+
+        void OpenTaskListSelectionGenericMenu() {
+            var menu = new GenericMenu();
+            foreach (var directory in FindAllDirectoriesWithTaskList()) {
+                menu.AddItem( new GUIContent( directory ), taskListPaths.Any( t => t.path == directory ), () => {
+                    if (taskListPaths.All( t => t.path != directory )) {
+                        taskListPaths.Add( new(directory) );
+                        SaveActiveDirectories( taskListPaths.Select( t => t.path ).ToList() );
+                        forceSaveAllTaskEditors();
+                        forceReloadAllTaskEditors();
+                    }
+                } );
+            }
+
+            menu.ShowAsContext();
+        }
+
+        void OpenAllTaskListDirectories() {
+            forceSaveAllTaskEditors();
+            foreach (var dir in FindAllDirectoriesWithTaskList()) 
+                taskListPaths.Add( new TaskListDirectory( dir ) );
+            SaveActiveDirectories( taskListPaths.Select( t => t.path ).ToList() );
+            forceReloadAllTaskEditors();
         }
 
         void drawTask((TaskList taskList, Editor editor) task) {
@@ -154,13 +212,13 @@ namespace UnityTodo {
             }
         }
 
-        void addNewTaskList() {
+        void addNewTaskList(string path) {
             forceSaveAllTaskEditors();
             var newTaskList = CreateInstance<TaskList>();
             newTaskList.order = taskEditors.Count > 0 ? taskEditors.Max( task => task.taskList.order ) + 1 : 0;
             newTaskList.name = "New Task " + newTaskList.order;
-            Directory.CreateDirectory( Settings.TODO_DIRECTORY_PATH );
-            AssetDatabase.CreateAsset( newTaskList, Path.Combine( Settings.TODO_DIRECTORY_PATH, newTaskList.name + ".asset" ) );
+            Directory.CreateDirectory( path );
+            AssetDatabase.CreateAsset( newTaskList, Path.Combine( path, newTaskList.name + ".asset" ) );
             AssetDatabase.SaveAssets();
             forceReloadAllTaskEditors();
         }
@@ -188,13 +246,20 @@ namespace UnityTodo {
             AssetDatabase.ImportAsset( Settings.TODO_DIRECTORY_PATH, ImportAssetOptions.ImportRecursive );
             taskEditors =
                 taskListPaths
-                .SelectMany( tpath => IOUtils.GetAllTaskListsAtPath(tpath.path) )
+                .SelectMany( tpath => GetAllTaskListsAtPath(tpath.path) )
                 .Select( AssetDatabase.LoadAssetAtPath<TaskList> )
                 .OrderBy( task => task.order )
                 .Select( task => (task, Editor.CreateEditor( task )) )
                 .ToList();
         }
-        
+
+        void ensureTaskListPathsLoaded() {
+            if (taskListPaths == null) {
+                taskListPaths = GetActiveDirectories().Select( s => new TaskListDirectory( s ) ).ToList();
+                Repaint();
+                Debug.Log( $"loaded all" );
+            } 
+        }
         void ensureTasksLoaded() {
             if (taskEditors == null) forceReloadAllTaskEditors();
         }

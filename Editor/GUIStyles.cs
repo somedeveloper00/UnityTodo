@@ -296,6 +296,17 @@ namespace UnityTodo {
             }
             return _todoWidnow_TaskListDirectoriesTex;
         }
+
+        [NonSerialized] static Texture2D _todoWidnow_NewTaskListTex;
+        public static Texture2D TodoWindow_GetNewTaskListTex() {
+            if (_todoWidnow_NewTaskListTex == null) {
+                _todoWidnow_NewTaskListTex = EditorGUIUtility.isProSkin
+                    ? EditorGUIUtility.FindTexture( "d_CreateAddNew" )
+                    : EditorGUIUtility.FindTexture( "CreateAddNew" );
+            }
+            return _todoWidnow_NewTaskListTex;
+        }
+        
         [NonSerialized] static GUIStyle _todoWindow_TaskListPathItem;
         public static GUIStyle TodoWindow_GetTaskListPathItem() {
             if (_todoWindow_TaskListPathItem == null) {
@@ -311,12 +322,25 @@ namespace UnityTodo {
             return _todoWindow_TaskListPathItem;
         }
 
+        [NonSerialized] static GUIStyle _todoWindow_NewTaskList;
+        public static GUIStyle TodoWindow_GetNewTaskList() {
+            if (_todoWindow_NewTaskList == null) {
+                var style = new GUIStyle( GUI.skin.button );
+                style.fontSize = NORMAL_FONT_SIZE;
+                style.richText = true;
+                style.alignment = TextAnchor.MiddleLeft;
+                _todoWindow_NewTaskList = style;
+            }
+
+            return _todoWindow_NewTaskList;
+        }
+
 #endregion
 
 #region Texture Manips
 
         public static Texture2D CreateTexture(Color color) {
-            var tex = new Texture2D( Texture2D.normalTexture.width, Texture2D.normalTexture.height, Texture2D.normalTexture.format, false );
+            var tex = new Texture2D( Texture2D.normalTexture.width, Texture2D.normalTexture.height );
             // set all pixels to clear
             var cols = new Color[16];
             Array.Fill( cols, color, 0, 16 );

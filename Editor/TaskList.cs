@@ -25,6 +25,7 @@ namespace UnityTodo {
             
             [NonSerialized] ExposedReorderableList _list;
             [NonSerialized] Vector3 tasksScrollPos;
+            [NonSerialized] bool firstTime = true;
 
             void OnEnable() {
                 var tasksProp = serializedObject.FindProperty( nameof(tasks) );
@@ -136,8 +137,6 @@ namespace UnityTodo {
                 _list.footerHeight = 30;
                 
                 
-                _list.ClearCache();
-                _list.CacheIfNeeded();
             }
 
             public override void OnInspectorGUI() {
@@ -216,6 +215,14 @@ namespace UnityTodo {
                     }
                 }
                 serializedObject.ApplyModifiedProperties();
+                
+                // first time always make wrong list element heights, so we have to flush it one time
+                if (firstTime && Event.current.type == EventType.Repaint) {
+                    firstTime = false; 
+                    EditorWindow.focusedWindow?.Repaint(); 
+                    _list.ClearCache();
+                    _list.CacheIfNeeded();
+                }
             }
         }
     }

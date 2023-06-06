@@ -21,18 +21,21 @@ MonoBehaviour:
       for new task list per directory"
     progress: 1
     isEditing: 0
-  - title: Reorder Task Lists left/right
-    description: '* simple
-
-      * drag and drop support'
-    progress: 0
-    isEditing: 0
   - title: '[Bug] "Move To" options not updating as they should'
     description: they don't update after deleting a task list
     progress: 0
     isEditing: 0
+  - title: Reorder Task Lists left/right
+    description: '* simple
+
+      * drag and drop support
+
+      * if two tasks have
+      same order, show by order of directory list'
+    progress: 0
+    isEditing: 0
   - title: Add object reference pinning
-    description: 
+    description: serialize Object ref by guid as string
     progress: 0
     isEditing: 0
   - title: Shortcuts

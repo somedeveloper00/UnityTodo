@@ -17,7 +17,7 @@ MonoBehaviour:
   tasks:
   - title: Add comment support for each Task
     description: 
-    progress: 0.433
+    progress: 0
     isEditing: 0
     bulletPoints: []
     references: []

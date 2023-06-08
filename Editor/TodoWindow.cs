@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static UnityTodo.GUIStyles;
 using static UnityTodo.IOUtils;
@@ -17,7 +18,7 @@ namespace UnityTodo {
             window.Show();
         }
 
-        List<(TaskList taskList, Editor editor)> taskEditors;
+        public List<(TaskList taskList, Editor editor)> taskEditors;
         [SerializeField] Vector2 mainScrollPos;
         [SerializeField] List<TaskListDirectory> taskListPaths;
 

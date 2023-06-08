@@ -15,16 +15,16 @@ MonoBehaviour:
   order: 2
   title: First UPM Release
   tasks:
-  - title: Bulletpoints
-    description: provide option to whether use manual slider or bullet-point type
-      (so slider would fill based on completed bulletpoints)
+  - title: Turn project into a UPM package
+    description: 
     progress: 0
     isEditing: 0
     bulletPoints: []
     references: []
-  - title: Turn project into a UPM package
-    description: 
-    progress: 0
+  - title: Bulletpoints
+    description: provide option to whether use manual slider or bullet-point type
+      (so slider would fill based on completed bulletpoints)
+    progress: 1
     isEditing: 0
     bulletPoints: []
     references: []

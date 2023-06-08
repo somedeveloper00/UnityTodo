@@ -323,6 +323,16 @@ namespace UnityTodo {
             return _task_FinishedReferenceName;
         }
 
+        [NonSerialized] static GUIStyle _task_BulletpointNameEdit;
+        public static GUIStyle Task_GetBulletpointNameEdit() {
+            if (_task_BulletpointNameEdit == null) {
+                var style = new GUIStyle( EditorStyles.textField );
+                style.fontSize = SMALL_FONT_SIZE;
+                _task_BulletpointNameEdit = style;
+            }
+
+            return _task_BulletpointNameEdit;
+        }
         [NonSerialized] static GUIStyle _task_BulletpointNew;
         public static GUIStyle Task_GetBulletpointNew() {
             if (_task_BulletpointNew == null) {

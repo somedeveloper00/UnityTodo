@@ -124,7 +124,7 @@ namespace UnityTodo {
                             position.width = lastWidth - checkboxWidth;
                             if (isEditingProp.boolValue) position.width -= removeButtonWidth;
                             var descStyle = isEditingProp.boolValue
-                                ? Task_GetReferenceNameEdit()
+                                ? Task_GetBulletpointNameEdit()
                                 : progressProp.floatValue < 1 && !toggleProp.boolValue ? EditorStyles.label : Task_GetFinishedBulletpoint();
                             var descText = isEditingProp.boolValue || progressProp.floatValue < 1 && !toggleProp.boolValue
                                 ? descProp.stringValue
@@ -149,7 +149,7 @@ namespace UnityTodo {
                             position.y += 20 + EditorGUIUtility.standardVerticalSpacing;
                         }
                         
-                        // new element
+                        // new bullet-point
                         if (isEditingProp.boolValue) {
                             position.width = 20;
                             GUI.enabled = false;
@@ -167,15 +167,21 @@ namespace UnityTodo {
                                 }
                             }
 
-                            position.y += 20;
+                            position.y += 20 + EditorGUIUtility.standardVerticalSpacing;
                         }
+                        position.x = lastX;
+                        position.width = lastWidth;
                     }
                     
                     // references prop
                     {
+                        
+                        if (isEditingProp.boolValue || referencesProp.arraySize > 0) position.y += 5;
                         var lastWidth = position.width;
                         var lastX = position.x;
                         position.height = 20;
+                        const int removeWidth = 30;
+                        
                         for (int i = 0; i < referencesProp.arraySize; i++) {
                             
                             var element = referencesProp.GetArrayElementAtIndex( i );
@@ -194,7 +200,7 @@ namespace UnityTodo {
                             // object reference
                             position.x += position.width;
                             position.width = lastWidth - position.width;
-                            if (isEditingProp.boolValue) position.width -= 30;
+                            if (isEditingProp.boolValue) position.width -= removeWidth;
                             if (!_path2Obj.TryGetValue( pathProp.stringValue, out var reference ))
                                 _path2Obj[pathProp.stringValue] = reference = AssetDatabase.LoadAssetAtPath<Object>( pathProp.stringValue );
                             using (new EditorGUI.DisabledScope( !isEditingProp.boolValue && progressProp.floatValue >= 1 ))
@@ -206,7 +212,7 @@ namespace UnityTodo {
                                 }
                             }
 
-                            position.x += position.width; position.width = 30;
+                            position.x += position.width; position.width = removeWidth;
                             // remove button
                             if (isEditingProp.boolValue) {
                                 if (GUI.Button( position, new GUIContent( TaskList_GetDeleteTex(), "Delete Object Reference" ) )) {
@@ -218,20 +224,29 @@ namespace UnityTodo {
                             position.x = lastX;
                             position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
                         }
-                        position.width = lastWidth;
                         
-                        // add object reference button
+                        // new object reference button
                         if (isEditingProp.boolValue) {
-                            position.x += position.width - 30;
-                            position.width = 30;
-                            if (GUI.Button( position, new GUIContent( TodoWindow_GetNewTaskListTex(), "New Object Reference" ) )) {
-                                referencesProp.arraySize++;
+                            position.width = lastWidth * 0.55f - 10;
+                            using (var check = new EditorGUI.ChangeCheckScope()) {
+                                var name = EditorGUI.TextField( position, "(New Object name)", Task_GetBulletpointNew() );
+                                position.x += position.width + 10;
+                                position.width = lastWidth - 10 - position.width;
+                                var reference = EditorGUI.ObjectField( position, null, typeof(Object), false );
+                                if (check.changed) {
+                                    referencesProp.arraySize++;
+                                    var prop = referencesProp.GetArrayElementAtIndex( referencesProp.arraySize - 1 );
+                                    prop.FindPropertyRelative( nameof(Reference.name) ).stringValue = name;
+                                    prop.FindPropertyRelative( nameof(Reference.path) ).stringValue = AssetDatabase.GetAssetPath( reference );
+                                }
+
                             }
 
-                            position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
-                            position.x = lastX;
-                            position.width = lastWidth;
+                            position.y += 20 + EditorGUIUtility.standardVerticalSpacing;
                         }
+                        position.x = lastX;
+                        position.width = lastWidth;
+                        if (isEditingProp.boolValue || referencesProp.arraySize > 0) position.y += 5;
                     }
 
 
@@ -277,8 +292,8 @@ namespace UnityTodo {
                 h += EditorGUIUtility.standardVerticalSpacing;
 
                 // desc
+                h += 10;
                 if (isEditingProp.boolValue || !string.IsNullOrEmpty( descriptionProp.stringValue )) {
-                    h += 10;
                     var descStyle = isEditingProp.boolValue
                         ? Task_GetDescTextEdit()
                         : progressProp.floatValue < 1 ? Task_GetUnfinishedDescText() : Task_GetFinishedDescText();
@@ -295,6 +310,7 @@ namespace UnityTodo {
                     h += 20 + EditorGUIUtility.standardVerticalSpacing;
                 
                 // references
+                if (isEditingProp.boolValue || referencesProp.arraySize > 0) h += 5 + 5; // start and end padding
                 h += referencesProp.arraySize * (20 + EditorGUIUtility.standardVerticalSpacing);
                 if (isEditingProp.boolValue) // add button
                     h += 20 + EditorGUIUtility.standardVerticalSpacing;

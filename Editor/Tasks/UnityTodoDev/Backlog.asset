@@ -37,16 +37,8 @@ MonoBehaviour:
     description: i.e. for backlog tasks that don't need progress at the time of being
       at backlog
     progress: 0
-    isEditing: 1
-    bulletPoints:
-    - description: new bulletpoint
-      done: 1
-    - description: new
-      done: 1
-    - description: Add mt name
-      done: 1
-    - description: New Task
-      done: 0
+    isEditing: 0
+    bulletPoints: []
     references: []
   - title: Open Task Editor in modal window
     description: 

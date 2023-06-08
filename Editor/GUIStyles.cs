@@ -5,9 +5,9 @@ using UnityEngine;
 namespace UnityTodo {
     internal static class GUIStyles {
         
-        const int BIG_FONT_SIZE = (int)(20 * Settings.FONT_SCALE);
-        const int NORMAL_FONT_SIZE = (int)(15 * Settings.FONT_SCALE);
-        const int SMALL_FONT_SIZE = (int)(12 * Settings.FONT_SCALE);
+        public const int BIG_FONT_SIZE = (int)(20 * Settings.FONT_SCALE);
+        public const int NORMAL_FONT_SIZE = (int)(15 * Settings.FONT_SCALE);
+        public const int SMALL_FONT_SIZE = (int)(12 * Settings.FONT_SCALE);
 
         [NonSerialized] static GUIStyle _bigTextField;
         public static GUIStyle GetBigTextField() {
@@ -146,9 +146,7 @@ namespace UnityTodo {
         [NonSerialized] static Texture2D _taskList_CopyTex;
         public static Texture2D TaskList_GetCopyTex() {
             if (_taskList_CopyTex == null) {
-                _taskList_CopyTex = EditorGUIUtility.isProSkin
-                    ? EditorGUIUtility.FindTexture( "d_Clipboard" )
-                    : EditorGUIUtility.FindTexture( "Clipboard" );
+                _taskList_CopyTex = EditorGUIUtility.FindTexture( "Clipboard" );
             }
             return _taskList_CopyTex;
         }
@@ -171,6 +169,26 @@ namespace UnityTodo {
                     : EditorGUIUtility.FindTexture( "_Menu" );
             }
             return _taskList_TaskMenuTex;
+        }
+
+        [NonSerialized] static Texture2D _taskList_MoveLeftTex;
+        public static Texture2D TaskList_Get_MoveLeftTex() {
+            if (_taskList_MoveLeftTex == null) {
+                _taskList_MoveLeftTex = EditorGUIUtility.isProSkin
+                    ? EditorGUIUtility.FindTexture( "d_back" )
+                    : EditorGUIUtility.FindTexture( "back" );
+            }
+            return _taskList_MoveLeftTex;
+        }
+
+        [NonSerialized] static Texture2D _taskList_MoveRightTex;
+        public static Texture2D TaskList_Get_MoveRightTex() {
+            if (_taskList_MoveRightTex == null) {
+                _taskList_MoveRightTex = EditorGUIUtility.isProSkin
+                    ? EditorGUIUtility.FindTexture( "d_forward" )
+                    : EditorGUIUtility.FindTexture( "forward" );
+            }
+            return _taskList_MoveRightTex;
         }
 
 #endregion
@@ -283,10 +301,54 @@ namespace UnityTodo {
 
             return _task_DescTextEdit;
         }
+
+        [NonSerialized] static GUIStyle _task_ReferenceNameEdit;
+        public static GUIStyle Task_GetReferenceNameEdit() {
+            if (_task_ReferenceNameEdit == null) {
+                var style = new GUIStyle( EditorStyles.textField );
+                style.fontSize = SMALL_FONT_SIZE;
+                _task_ReferenceNameEdit = style;
+            }
+
+            return _task_ReferenceNameEdit;
+        }
+
+        [NonSerialized] static GUIStyle _task_FinishedReferenceName;
+        public static GUIStyle Task_GetFinishedReferenceName() {
+            if (_task_FinishedReferenceName == null) {
+                var style = new GUIStyle( EditorStyles.label );
+                style.fontStyle = FontStyle.Italic;
+                style.fontSize = SMALL_FONT_SIZE;
+                _task_FinishedReferenceName = style;
+            }
+
+            return _task_FinishedReferenceName;
+        }
+
+        [NonSerialized] static Texture2D _task_DeleteObjectReferenceTex;
+        public static Texture2D Task_DeleteObjectReferenceTex() {
+            if (_task_DeleteObjectReferenceTex == null) {
+                _task_DeleteObjectReferenceTex = EditorGUIUtility.isProSkin
+                    ? EditorGUIUtility.FindTexture( "d_TreeEditor.Trash" )
+                    : EditorGUIUtility.FindTexture( "TreeEditor.Trash" );
+            }
+            return _task_DeleteObjectReferenceTex;
+        }
+
 #endregion
 
 #region TODO Window
         
+        [NonSerialized] static Texture2D _todoWidnow_TaskListGripTex;
+        public static Texture2D TodoWindow_GetTaskListGripTex() {
+            if (_todoWidnow_TaskListGripTex == null) {
+                _todoWidnow_TaskListGripTex = EditorGUIUtility.isProSkin
+                    ? EditorGUIUtility.FindTexture( "d_curvekeyframeselectedoverlay" )
+                    : EditorGUIUtility.FindTexture( "curvekeyframeselectedoverlay" );
+            }
+            return _todoWidnow_TaskListGripTex;
+        }
+
         [NonSerialized] static Texture2D _todoWidnow_TaskListDirectoriesTex;
         public static Texture2D TodoWindow_GetTaskListDirectoriesTex() {
             if (_todoWidnow_TaskListDirectoriesTex == null) {

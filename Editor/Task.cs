@@ -1,9 +1,10 @@
 using System;
-using Palmmedia.ReportGenerator.Core.Reporting.Builders;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using static UnityTodo.GUIStyles;
 using static UnityTodo.GUIUtilities;
+using Object = UnityEngine.Object;
 
 namespace UnityTodo {
     [Serializable] internal class Task {
@@ -11,11 +12,17 @@ namespace UnityTodo {
         public string description;
         public float progress;
         public bool isEditing = true;
+        public List<Reference> references = new();
 
+        [Serializable] public struct Reference {
+            public string name;
+            public string path;
+        }
 
         public const string TITLE_CONTROL_NAME = "task-title";
         public const string DESCRIPTION_CONTROL_NAME = "task-description";
         public const string PROGRESS_CONTROL_NAME = "task-progress";
+
 
         [CustomPropertyDrawer(typeof(Task))]
         class drawer : PropertyDrawer {
@@ -23,21 +30,24 @@ namespace UnityTodo {
             [NonSerialized] float lastTitleWidth = 280;
             [NonSerialized] float lastDescriptionWidth = 280;
             
+            [NonSerialized] static Dictionary<string, Object> _path2Obj = new();
+
             public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
                 var titleProp = property.FindPropertyRelative( nameof(title) );
                 var descriptionProp = property.FindPropertyRelative( nameof(description) );
                 var isEditingProp = property.FindPropertyRelative( nameof(isEditing) );
                 var progressProp = property.FindPropertyRelative( nameof(progress) );
+                var referencesProp = property.FindPropertyRelative( nameof(references) );
 
                 
                 using (new EditorGUI.PropertyScope( position, label, property )) {
                     
                     position.height = EditorGUIUtility.singleLineHeight;
-                    position.y += 4;
+                    position.y += 10;
 
                     // title prop
-                    position.x += 25;
-                    position.width -= 50;
+                    position.x += 10;
+                    position.width -= 20;
                     if (Event.current.type == EventType.Repaint)
                         lastTitleWidth = position.width; // save for later height calculation (used for word wrap)
                     position.height += 10;
@@ -54,21 +64,23 @@ namespace UnityTodo {
                             titleProp.stringValue = r;
                     }
                     position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
-                    position.x -= 25;
-                    position.width += 50 - 15;
+                    position.x -= 10;
+                    position.width += 20;
                     
                     if (Event.current.type == EventType.Repaint)
                         lastDescriptionWidth = position.width;
                     
                     // description prop
-                    if (isEditingProp.boolValue || !string.IsNullOrEmpty( descriptionProp.stringValue )) {
-                        position.y += 5;
+                    {
+                        position.y += 10;
                         var descStyle = isEditingProp.boolValue
                             ? Task_GetDescTextEdit()
                             : progressProp.floatValue < 1 ? Task_GetUnfinishedDescText() : Task_GetFinishedDescText();
-                        var height = isEditingProp.boolValue
-                            ? Mathf.Max( descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), position.width ), 50 )
-                            : descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), position.width );
+                        var height = !isEditingProp.boolValue && string.IsNullOrEmpty( descriptionProp.stringValue )
+                            ? 0
+                            : isEditingProp.boolValue
+                                ? Mathf.Max( descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), position.width ), 50 )
+                                : descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), position.width );
                         position.height = height;
                         using (var check = new EditorGUI.ChangeCheckScope()) {
                             GUI.SetNextControlName( DESCRIPTION_CONTROL_NAME );
@@ -77,6 +89,70 @@ namespace UnityTodo {
                                 descriptionProp.stringValue = r;
                         }
                         position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
+                    }
+                    
+                    // references prop
+                    {
+                        position.y += 5;
+                        var lastWidth = position.width;
+                        var lastX = position.x;
+                        position.height = 20;
+                        for (int i = 0; i < referencesProp.arraySize; i++) {
+                            
+                            var element = referencesProp.GetArrayElementAtIndex( i );
+                            var nameProp = element.FindPropertyRelative( nameof(Reference.name) );
+                            var pathProp = element.FindPropertyRelative( nameof(Reference.path) );
+                            
+                            position.width = Mathf.Min( EditorStyles.label.CalcSize( new GUIContent( nameProp.stringValue ) ).x + 10, lastWidth * 0.5f );
+                            var nameStyle = isEditingProp.boolValue ? Task_GetReferenceNameEdit() 
+                                : progressProp.floatValue < 1 ? EditorStyles.label : Task_GetFinishedReferenceName();
+                            using (var check = new EditorGUI.ChangeCheckScope()) {
+                                var r = EditorGUI.TextField( position, nameProp.stringValue, nameStyle );
+                                if (check.changed && isEditingProp.boolValue)
+                                    nameProp.stringValue = r;
+                            }
+                            
+                            // object reference
+                            position.x += position.width;
+                            position.width = lastWidth - position.width;
+                            if (isEditingProp.boolValue) position.width -= 30;
+                            if (!_path2Obj.TryGetValue( pathProp.stringValue, out var reference ))
+                                _path2Obj[pathProp.stringValue] = reference = AssetDatabase.LoadAssetAtPath<Object>( pathProp.stringValue );
+                            using (new EditorGUI.DisabledScope( !isEditingProp.boolValue && progressProp.floatValue >= 1 ))
+                            using (var check = new EditorGUI.ChangeCheckScope()) {
+                                var r = EditorGUI.ObjectField( position, reference, typeof(Object), false );
+                                if (check.changed) {
+                                    pathProp.stringValue = AssetDatabase.GetAssetPath( r );
+                                    if (!isEditingProp.boolValue) isEditingProp.boolValue = true;
+                                }
+                            }
+
+                            position.x += position.width; position.width = 30;
+                            // remove button
+                            if (isEditingProp.boolValue) {
+                                if (GUI.Button( position, new GUIContent( TaskList_GetDeleteTex(), "Delete Object Reference" ) )) {
+                                    referencesProp.DeleteArrayElementAtIndex( i );
+                                    i--;
+                                }
+                            }
+                            
+                            position.x = lastX;
+                            position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
+                        }
+                        position.width = lastWidth;
+                        
+                        // add object reference button
+                        if (isEditingProp.boolValue) {
+                            position.x += position.width - 30;
+                            position.width = 30;
+                            if (GUI.Button( position, new GUIContent( TodoWindow_GetNewTaskListTex(), "New Object Reference" ) )) {
+                                referencesProp.arraySize++;
+                            }
+
+                            position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
+                            position.x = lastX;
+                            position.width = lastWidth;
+                        }
                     }
 
 
@@ -109,7 +185,8 @@ namespace UnityTodo {
                 var titleProp = property.FindPropertyRelative( nameof(title) );
                 var isEditingProp = property.FindPropertyRelative( nameof(isEditing) );
                 var progressProp = property.FindPropertyRelative( nameof(progress) );
-                float h = 4;
+                var referencesProp = property.FindPropertyRelative( nameof(references) );
+                float h = 10;
 
                 // title
                 var titleStyle = isEditingProp.boolValue
@@ -120,7 +197,7 @@ namespace UnityTodo {
 
                 // desc
                 if (isEditingProp.boolValue || !string.IsNullOrEmpty( descriptionProp.stringValue )) {
-                    h += 5;
+                    h += 10;
                     var descStyle = isEditingProp.boolValue
                         ? Task_GetDescTextEdit()
                         : progressProp.floatValue < 1 ? Task_GetUnfinishedDescText() : Task_GetFinishedDescText();
@@ -129,8 +206,15 @@ namespace UnityTodo {
                         : descStyle.CalcHeight( new GUIContent( descriptionProp.stringValue ), lastDescriptionWidth );
                     h += EditorGUIUtility.standardVerticalSpacing;
                 }
+                
+                // references
+                h += 5;
+                h += referencesProp.arraySize * (20 + EditorGUIUtility.standardVerticalSpacing);
+                if (isEditingProp.boolValue) // add button
+                    h += 20 + EditorGUIUtility.standardVerticalSpacing;
 
                 h += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                h += 5;
                 return h;
             }
 

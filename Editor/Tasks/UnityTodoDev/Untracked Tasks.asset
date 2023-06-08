@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Untracked Tasks
   m_EditorClassIdentifier: 
   order: 3
-  title: Untracked Tasks
+  title: Untracked
   tasks:
   - title: Add light mode support
     description: '* Separate system for GUIStyle and use for all GUIs.
@@ -22,39 +22,49 @@ MonoBehaviour:
       tune colors'
     progress: 1
     isEditing: 0
+    references: []
   - title: Title word wrap support
     description: 
     progress: 1
     isEditing: 0
+    references: []
   - title: Enter Edit mode by mouse click
     description: 
     progress: 1
     isEditing: 0
+    references: []
   - title: Global Font Size
     description: 
     progress: 1
     isEditing: 0
+    references: []
   - title: Fixed Menu Button in light mode
     description: 
     progress: 1
     isEditing: 0
+    references: []
   - title: Directory-based Grouping
     description: 
     progress: 1
     isEditing: 0
+    references: []
   - title: Assembly only in Editor
     description: 
     progress: 1
     isEditing: 0
+    references: []
   - title: '[bug] delete tasks without console warning'
     description: 
     progress: 1
     isEditing: 0
+    references: []
   - title: '[bug] height inconsistency caused by word wrapping'
     description: 
     progress: 1
     isEditing: 0
+    references: []
   - title: '[bug] initial element heigts not correct'
     description: 
     progress: 1
     isEditing: 0
+    references: []

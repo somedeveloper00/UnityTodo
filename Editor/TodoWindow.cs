@@ -38,6 +38,33 @@ namespace UnityTodo {
             foreach (var taskEditor in taskEditors) DestroyImmediate( taskEditor.editor );
         }
 
+        public TaskList GetNextTaskList(TaskList taskList) {
+            var index = taskEditors.FindIndex( t => t.taskList == taskList );
+            if (index == -1) throw new Exception( "Task List not found" );
+            return index < taskEditors.Count - 1 ? taskEditors[index + 1].taskList : taskEditors[index].taskList;
+        }
+        
+        public TaskList GetPrevTaskList(TaskList taskList) {
+            var index = taskEditors.FindIndex( t => t.taskList == taskList );
+            if (index == -1) throw new Exception( "Task List not found" );
+            return index > 0 ? taskEditors[index - 1].taskList : taskEditors[index].taskList;
+        }
+
+        public void SortTaskLists() {
+            taskEditors.Sort( (t1, t2) => {
+                var c = t1.taskList.order.CompareTo( t2.taskList.order );
+                if (c == 0) { // compare by task list directory index
+                    var p1 = AssetDatabase.GetAssetPath( t1.taskList );
+                    var i1 = taskListPaths.FindIndex( t => Directory.GetFiles( t.path, "*.asset", SearchOption.TopDirectoryOnly ).Any( p => p == p1 ) );
+                    var p2 = AssetDatabase.GetAssetPath( t2.taskList );
+                    var i2 = taskListPaths.FindIndex( t => Directory.GetFiles( t.path, "*.asset", SearchOption.TopDirectoryOnly ).Any( p => p == p2 ) );
+                    c = i1.CompareTo( i2 );
+                }
+                return c;
+            } );
+        }
+
+
         void OnGUI() {
             ensureTaskListPathsLoaded();
             ensureTasksLoaded();
@@ -269,6 +296,7 @@ namespace UnityTodo {
                 Debug.Log( $"loaded all" );
             } 
         }
+       
         void ensureTasksLoaded() {
             if (taskEditors == null) forceReloadAllTaskEditors();
         }

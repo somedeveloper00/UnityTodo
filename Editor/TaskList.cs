@@ -166,9 +166,11 @@ namespace UnityTodo {
             public override void OnInspectorGUI() {
                 serializedObject.Update();
                 var titleProp = serializedObject.FindProperty( nameof(title) );
+                var orderProp = serializedObject.FindProperty( nameof(order) );
                 
                 var headerRect = EditorGUILayout.GetControlRect( false, 60, GUIStyle.none );
                 
+                // draw progress
                 var progress = ((TaskList)target).GetProgress();
                 if (progress < 1) {
                     var progRect = headerRect;
@@ -195,7 +197,30 @@ namespace UnityTodo {
                         EditorGUIUtility.AddCursorRect( toolbarRect, MouseCursor.Arrow );
                     }
                     
-                    toolbarRect.x += toolbarRect.width - 60;
+                    toolbarRect.x += toolbarRect.width - 25;
+                    
+                    toolbarRect.width = 25;
+                    if (GUI.Button( toolbarRect, new GUIContent( TaskList_Get_TaskMenuTex(), "Options" ), TaskList_GetToolbarButton() )) {
+                        var menu = new GenericMenu();
+                        if (EditorWindow.focusedWindow is TodoWindow todoWindow) {
+                            menu.AddItem( new GUIContent( "Move Right" ), false, () => {
+                                orderProp.intValue = todoWindow.GetNextTaskList( (TaskList)target ).order + 1;
+                                serializedObject.ApplyModifiedProperties();
+                                todoWindow.SortTaskLists();
+                                todoWindow.Repaint();
+                            } );
+                            menu.AddItem( new GUIContent( "Move Left" ), false, () => {
+                                orderProp.intValue = todoWindow.GetPrevTaskList( (TaskList)target ).order - 1;
+                                serializedObject.ApplyModifiedProperties();
+                                todoWindow.SortTaskLists();
+                                todoWindow.Repaint();
+                            } );
+                        }
+
+                        menu.ShowAsContext();
+                    }
+
+                    toolbarRect.x -= 60;
                     toolbarRect.width = 60;
                     if (GUI.Button( toolbarRect, new GUIContent("Delete", TaskList_GetDeleteTex(), "Delete Task List"), TaskList_GetToolbarButton() )) {
                         AssetDatabase.DeleteAsset( AssetDatabase.GetAssetPath( target ) );
@@ -203,18 +228,17 @@ namespace UnityTodo {
                     }
                     
                     toolbarRect.x -= toolbarRect.width;
-
                     if (GUI.Button( toolbarRect, new GUIContent("Copy", TaskList_GetCopyTex(), "Copy To Clipboard"), TaskList_GetToolbarButton() )) {
                         var json = JsonUtility.ToJson( target );
                         EditorGUIUtility.systemCopyBuffer = json;
                     }
                     
                     toolbarRect.x -= toolbarRect.width;
-                    
                     if (GUI.Button( toolbarRect, new GUIContent("Paste", TaskList_GetPasteTex(), "Import From Clipboard"), TaskList_GetToolbarButton() )) {
                         Undo.RecordObject( target, "Pasted task list" );
                         var json = EditorGUIUtility.systemCopyBuffer;
                         JsonUtility.FromJsonOverwrite( json, target );
+                        serializedObject.Update();
                     }
                 }
 

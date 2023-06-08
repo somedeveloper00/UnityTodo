@@ -12,16 +12,22 @@ namespace UnityTodo {
         public string description;
         public float progress;
         public bool isEditing = true;
+        public List<BulletPoint> bulletPoints = new();
         public List<Reference> references = new();
 
         [Serializable] public struct Reference {
             public string name;
             public string path;
         }
+        [Serializable] public struct BulletPoint {
+            public string description;
+            public bool done;
+        }
 
         public const string TITLE_CONTROL_NAME = "task-title";
         public const string DESCRIPTION_CONTROL_NAME = "task-description";
         public const string PROGRESS_CONTROL_NAME = "task-progress";
+        public const string BULLETPOINT_TOGGLE_CONTROL_NAME = "task-bulletpoint-toggle";
 
 
         [CustomPropertyDrawer(typeof(Task))]
@@ -37,6 +43,7 @@ namespace UnityTodo {
                 var descriptionProp = property.FindPropertyRelative( nameof(description) );
                 var isEditingProp = property.FindPropertyRelative( nameof(isEditing) );
                 var progressProp = property.FindPropertyRelative( nameof(progress) );
+                var bulletPointsProp = property.FindPropertyRelative( nameof(bulletPoints) );
                 var referencesProp = property.FindPropertyRelative( nameof(references) );
 
                 
@@ -85,18 +92,96 @@ namespace UnityTodo {
                         using (var check = new EditorGUI.ChangeCheckScope()) {
                             GUI.SetNextControlName( DESCRIPTION_CONTROL_NAME );
                             var r = EditorGUI.TextArea( position, descriptionProp.stringValue, descStyle );
-                            if (check.changed && isEditingProp.boolValue) 
+                            if (check.changed && isEditingProp.boolValue) {
                                 descriptionProp.stringValue = r;
+                            }
                         }
                         position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
                     }
                     
+                    position.y += 5;
+
+                    // bullet-points prop
+                    {
+                        position.height = EditorGUIUtility.singleLineHeight;
+                        const int checkboxWidth = 20;
+                        const int removeButtonWidth = 30;
+                        var lastWidth = position.width;
+                        var lastX = position.x;
+                        
+                        for (int i = 0; i < bulletPointsProp.arraySize; i++) {
+                            var prop = bulletPointsProp.GetArrayElementAtIndex( i );
+                            var toggleProp = prop.FindPropertyRelative( nameof(BulletPoint.done) );
+                            var descProp = prop.FindPropertyRelative( nameof(BulletPoint.description) );
+                            
+                            // checkbox
+                            position.width = checkboxWidth;
+                            GUI.SetNextControlName( BULLETPOINT_TOGGLE_CONTROL_NAME + i );
+                            toggleProp.boolValue = EditorGUI.Toggle( position, toggleProp.boolValue );
+
+                            // description
+                            position.x += checkboxWidth;
+                            position.width = lastWidth - checkboxWidth;
+                            if (isEditingProp.boolValue) position.width -= removeButtonWidth;
+                            var descStyle = isEditingProp.boolValue
+                                ? Task_GetBulletpointNameEdit()
+                                : progressProp.floatValue < 1 && !toggleProp.boolValue ? EditorStyles.label : Task_GetFinishedBulletpoint();
+                            var descText = isEditingProp.boolValue || progressProp.floatValue < 1 && !toggleProp.boolValue
+                                ? descProp.stringValue
+                                : StrikeThrough( descProp.stringValue );
+                            using (var check = new EditorGUI.ChangeCheckScope()) {
+                                var r = EditorGUI.TextField( position, descText, descStyle );
+                                if (check.changed && isEditingProp.boolValue) 
+                                    descProp.stringValue = r;
+                            }
+
+                            // remove button
+                            if (isEditingProp.boolValue) {
+                                position.x += position.width;
+                                position.width = removeButtonWidth;
+                                if (GUI.Button( position, new GUIContent( TaskList_GetDeleteTex(), "Delete Bullet-Point" ) )) {
+                                    bulletPointsProp.DeleteArrayElementAtIndex( i );
+                                    i--;
+                                }
+                            }
+
+                            position.x = lastX; 
+                            position.y += 20 + EditorGUIUtility.standardVerticalSpacing;
+                        }
+                        
+                        // new bullet-point
+                        if (isEditingProp.boolValue) {
+                            position.width = 20;
+                            GUI.enabled = false;
+                            EditorGUI.Toggle( position, false );
+                            GUI.enabled = true;
+                            position.x += 20;
+                            position.width = lastWidth - 20;
+                            using (var check = new EditorGUI.ChangeCheckScope()) {
+                                var r = EditorGUI.TextField( position, "(New bullet point item)", Task_GetBulletpointNew() );
+                                if (check.changed) {
+                                    bulletPointsProp.arraySize++;
+                                    var prop = bulletPointsProp.GetArrayElementAtIndex( bulletPointsProp.arraySize - 1 );
+                                    prop.FindPropertyRelative( nameof(BulletPoint.description) ).stringValue = r;
+                                    prop.FindPropertyRelative( nameof(BulletPoint.done) ).boolValue = false;
+                                }
+                            }
+
+                            position.y += 20 + EditorGUIUtility.standardVerticalSpacing;
+                        }
+                        position.x = lastX;
+                        position.width = lastWidth;
+                    }
+                    
                     // references prop
                     {
-                        position.y += 5;
+                        
+                        if (isEditingProp.boolValue || referencesProp.arraySize > 0) position.y += 5;
                         var lastWidth = position.width;
                         var lastX = position.x;
                         position.height = 20;
+                        const int removeWidth = 30;
+                        
                         for (int i = 0; i < referencesProp.arraySize; i++) {
                             
                             var element = referencesProp.GetArrayElementAtIndex( i );
@@ -115,7 +200,7 @@ namespace UnityTodo {
                             // object reference
                             position.x += position.width;
                             position.width = lastWidth - position.width;
-                            if (isEditingProp.boolValue) position.width -= 30;
+                            if (isEditingProp.boolValue) position.width -= removeWidth;
                             if (!_path2Obj.TryGetValue( pathProp.stringValue, out var reference ))
                                 _path2Obj[pathProp.stringValue] = reference = AssetDatabase.LoadAssetAtPath<Object>( pathProp.stringValue );
                             using (new EditorGUI.DisabledScope( !isEditingProp.boolValue && progressProp.floatValue >= 1 ))
@@ -127,7 +212,7 @@ namespace UnityTodo {
                                 }
                             }
 
-                            position.x += position.width; position.width = 30;
+                            position.x += position.width; position.width = removeWidth;
                             // remove button
                             if (isEditingProp.boolValue) {
                                 if (GUI.Button( position, new GUIContent( TaskList_GetDeleteTex(), "Delete Object Reference" ) )) {
@@ -139,20 +224,29 @@ namespace UnityTodo {
                             position.x = lastX;
                             position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
                         }
-                        position.width = lastWidth;
                         
-                        // add object reference button
+                        // new object reference button
                         if (isEditingProp.boolValue) {
-                            position.x += position.width - 30;
-                            position.width = 30;
-                            if (GUI.Button( position, new GUIContent( TodoWindow_GetNewTaskListTex(), "New Object Reference" ) )) {
-                                referencesProp.arraySize++;
+                            position.width = lastWidth * 0.55f - 10;
+                            using (var check = new EditorGUI.ChangeCheckScope()) {
+                                var name = EditorGUI.TextField( position, "(New Object name)", Task_GetBulletpointNew() );
+                                position.x += position.width + 10;
+                                position.width = lastWidth - 10 - position.width;
+                                var reference = EditorGUI.ObjectField( position, null, typeof(Object), false );
+                                if (check.changed) {
+                                    referencesProp.arraySize++;
+                                    var prop = referencesProp.GetArrayElementAtIndex( referencesProp.arraySize - 1 );
+                                    prop.FindPropertyRelative( nameof(Reference.name) ).stringValue = name;
+                                    prop.FindPropertyRelative( nameof(Reference.path) ).stringValue = AssetDatabase.GetAssetPath( reference );
+                                }
+
                             }
 
-                            position.y += position.height + EditorGUIUtility.standardVerticalSpacing;
-                            position.x = lastX;
-                            position.width = lastWidth;
+                            position.y += 20 + EditorGUIUtility.standardVerticalSpacing;
                         }
+                        position.x = lastX;
+                        position.width = lastWidth;
+                        if (isEditingProp.boolValue || referencesProp.arraySize > 0) position.y += 5;
                     }
 
 
@@ -186,6 +280,8 @@ namespace UnityTodo {
                 var isEditingProp = property.FindPropertyRelative( nameof(isEditing) );
                 var progressProp = property.FindPropertyRelative( nameof(progress) );
                 var referencesProp = property.FindPropertyRelative( nameof(references) );
+                var bulletPointsProp = property.FindPropertyRelative( nameof(bulletPoints) );
+                
                 float h = 10;
 
                 // title
@@ -196,8 +292,8 @@ namespace UnityTodo {
                 h += EditorGUIUtility.standardVerticalSpacing;
 
                 // desc
+                h += 10;
                 if (isEditingProp.boolValue || !string.IsNullOrEmpty( descriptionProp.stringValue )) {
-                    h += 10;
                     var descStyle = isEditingProp.boolValue
                         ? Task_GetDescTextEdit()
                         : progressProp.floatValue < 1 ? Task_GetUnfinishedDescText() : Task_GetFinishedDescText();
@@ -207,8 +303,14 @@ namespace UnityTodo {
                     h += EditorGUIUtility.standardVerticalSpacing;
                 }
                 
-                // references
+                // bullet-points
                 h += 5;
+                h += bulletPointsProp.arraySize * (20 + EditorGUIUtility.standardVerticalSpacing);
+                if (isEditingProp.boolValue) // new element
+                    h += 20 + EditorGUIUtility.standardVerticalSpacing;
+                
+                // references
+                if (isEditingProp.boolValue || referencesProp.arraySize > 0) h += 5 + 5; // start and end padding
                 h += referencesProp.arraySize * (20 + EditorGUIUtility.standardVerticalSpacing);
                 if (isEditingProp.boolValue) // add button
                     h += 20 + EditorGUIUtility.standardVerticalSpacing;

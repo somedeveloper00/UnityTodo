@@ -131,8 +131,8 @@ namespace UnityTodo {
                         }
                     }
                     
-                    // check if it's already in edit mode
-                    if (wantsToGoEditMode) {
+                    // enter edit mode if has clicked and has not been in edit mode already
+                    if (wantsToGoEditMode && !GUI.GetNameOfFocusedControl().StartsWith( Task.BULLETPOINT_TOGGLE_CONTROL_NAME ) ) {
                         if (!isEditingProp.boolValue) {
                             for (int i = 0; i < _list.serializedProperty.arraySize; i++)
                                 _list.serializedProperty.GetArrayElementAtIndex( i )

@@ -11,6 +11,7 @@
 * Directory-based grouping of task lists (like the *workplace* feature of Trello. useful for when working on multiple projects in a single Unity session)
 * Shortcuts to make power users more productive
 * Add references to your Unity objects for tasks (saves by asset path)
+* Bullet-Points for task details
 
 ## 🛠️ Installation
 clone the repository into your project's Assets/Plugins folder as a submodule:

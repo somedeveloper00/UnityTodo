@@ -15,21 +15,24 @@ MonoBehaviour:
   order: 2
   title: First UPM Release
   tasks:
-  - title: Bulletpoints
-    description: provide option to whether use manual slider or bullet-point type
-      (so slider would fill based on completed bulletpoints)
-    progress: 0
-    isEditing: 0
-    references: []
   - title: Turn project into a UPM package
     description: 
     progress: 0
     isEditing: 0
+    bulletPoints: []
+    references: []
+  - title: Bulletpoints
+    description: provide option to whether use manual slider or bullet-point type
+      (so slider would fill based on completed bulletpoints)
+    progress: 1
+    isEditing: 0
+    bulletPoints: []
     references: []
   - title: Add object reference pinning
     description: serialize Object ref by guid as string
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Reorder Task Lists left/right
     description: '- simple
@@ -38,11 +41,13 @@ MonoBehaviour:
       directory list'
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: '[Bug] "Move To" options not updating as they should'
     description: they don't update after deleting a task list
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Shortcuts
     description: '- Save all on Ctrl+S
@@ -53,6 +58,7 @@ MonoBehaviour:
       all by ESC '
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Enhance Active Directories
     description: "- support for save/load in Editor Prefs\n- show warning initially
@@ -60,9 +66,11 @@ MonoBehaviour:
       for new task list per directory\n- new directory"
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Remove edit button on top-left of each task
     description: 
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []

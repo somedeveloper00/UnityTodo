@@ -274,9 +274,7 @@ namespace UnityTodo {
             if (_task_FinishedDescText == null) {
                 var style = new GUIStyle( EditorStyles.label );
                 style.normal.textColor =
-                    style.hover.textColor =
-                        style.active.textColor =
-                            EditorGUIUtility.isProSkin ? new(0.8f, 0.8f, 0.8f) : new(0.3f, 0.3f, 0.3f);
+                    EditorGUIUtility.isProSkin ? new(0.8f, 0.8f, 0.8f) : new(0.3f, 0.3f, 0.3f);
                 style.wordWrap = true;
                 style.richText = true;
                 style.fontStyle = FontStyle.Italic;
@@ -325,14 +323,41 @@ namespace UnityTodo {
             return _task_FinishedReferenceName;
         }
 
-        [NonSerialized] static Texture2D _task_DeleteObjectReferenceTex;
-        public static Texture2D Task_DeleteObjectReferenceTex() {
-            if (_task_DeleteObjectReferenceTex == null) {
-                _task_DeleteObjectReferenceTex = EditorGUIUtility.isProSkin
-                    ? EditorGUIUtility.FindTexture( "d_TreeEditor.Trash" )
-                    : EditorGUIUtility.FindTexture( "TreeEditor.Trash" );
+        [NonSerialized] static GUIStyle _task_BulletpointNameEdit;
+        public static GUIStyle Task_GetBulletpointNameEdit() {
+            if (_task_BulletpointNameEdit == null) {
+                var style = new GUIStyle( EditorStyles.textField );
+                style.fontSize = SMALL_FONT_SIZE;
+                _task_BulletpointNameEdit = style;
             }
-            return _task_DeleteObjectReferenceTex;
+
+            return _task_BulletpointNameEdit;
+        }
+        [NonSerialized] static GUIStyle _task_BulletpointNew;
+        public static GUIStyle Task_GetBulletpointNew() {
+            if (_task_BulletpointNew == null) {
+                var style = new GUIStyle( EditorStyles.textField );
+                style.fontStyle = FontStyle.Italic;
+                style.normal.textColor =
+                    EditorGUIUtility.isProSkin ? new(0.65f, 0.65f, 0.65f) : new(0.3f, 0.3f, 0.3f);
+                style.fontSize = SMALL_FONT_SIZE;
+                _task_BulletpointNew = style;
+            }
+
+            return _task_BulletpointNew;
+        }
+
+        [NonSerialized] static GUIStyle _task_FinishedBulletpoint;
+        public static GUIStyle Task_GetFinishedBulletpoint() {
+            if (_task_FinishedBulletpoint == null) {
+                var style = new GUIStyle( EditorStyles.label );
+                style.normal.textColor = EditorGUIUtility.isProSkin ? new(0.8f, 0.8f, 0.8f) : new(0.3f, 0.3f, 0.3f);
+                style.fontStyle = FontStyle.Italic;
+                style.fontSize = SMALL_FONT_SIZE;
+                _task_FinishedBulletpoint = style;
+            }
+
+            return _task_FinishedBulletpoint;
         }
 
 #endregion

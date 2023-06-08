@@ -19,46 +19,55 @@ MonoBehaviour:
     description: 
     progress: 0.433
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Sync with Github's Project
     description: 
     progress: 0
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Sync with Trello
     description: 
     progress: 0
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Add nonprogressive Tasks
     description: i.e. for backlog tasks that don't need progress at the time of being
       at backlog
     progress: 0
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Open Task Editor in modal window
     description: 
     progress: 0
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Export/Import bulltetpoint formatted tasks
     description: 
     progress: 0
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Task Color
     description: Add option to pin color to a task (preferrably a gradient based
       on a serializefield color) for the background of the task)
     progress: 0
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Drag and Drop tasks to left/right
     description: 
     progress: 0
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Add context menu option for any Asset to be pinned to a new Task
     description: 
     progress: 0
     isEditing: 0
+    bulletPoints: []
     references: []

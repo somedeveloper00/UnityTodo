@@ -118,6 +118,12 @@ namespace UnityTodo {
 
         }
 
+        void RepaintAll() {
+            Repaint();
+            foreach (var taskEditor in taskEditors) 
+                ((TaskList.Editor)taskEditor.editor).RepaintList();
+        }
+        
         void drawWelcome() {
             using (new GUILayout.VerticalScope()) {
                 GUILayout.Label( "Let's Get You Started!", GetBigLabel() );
@@ -168,9 +174,10 @@ namespace UnityTodo {
                     foreach (var taskEditor in taskEditors) {
                         Undo.RecordObject( taskEditor.taskList, "Sort Tasks" );
                         taskEditor.editor.serializedObject.ApplyModifiedProperties();
-                        taskEditor.taskList.tasks.Sort( (t1, t2) => t2.progress.CompareTo( t1.progress ) );
+                        taskEditor.taskList.tasks = taskEditor.taskList.tasks.OrderBy( t => t.progress >= 1 ? 1 : -t.progress ).ToList();
                         taskEditor.editor.serializedObject.Update();
                     }
+                    RepaintAll();
                 }
 
                 GUILayout.Space( 20 );

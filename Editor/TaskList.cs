@@ -14,11 +14,16 @@ namespace UnityTodo {
         public float GetProgress() => tasks.Count == 0 ? 1 : Mathf.Clamp01( tasks.Sum( t => t.progress ) / tasks.Count );
 
         [CustomEditor(typeof(TaskList))]
-        class editor : Editor {
+        public class Editor : UnityEditor.Editor {
             
             [NonSerialized] ExposedReorderableList _list;
             [NonSerialized] Vector3 tasksScrollPos;
             [NonSerialized] bool firstTime = true;
+
+            public void RepaintList() {
+                _list.ClearCache();
+                _list.CacheIfNeeded();
+            }
 
             void OnEnable() {
                 var tasksProp = serializedObject.FindProperty( nameof(tasks) );

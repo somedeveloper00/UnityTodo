@@ -15,10 +15,6 @@ MonoBehaviour:
   order: 2
   title: First UPM Release
   tasks:
-  - title: '[Bug] "Move To" options not updating as they should'
-    description: they don't update after deleting a task list
-    progress: 0
-    isEditing: 0
   - title: Reorder Task Lists left/right
     description: '* simple
 
@@ -40,6 +36,10 @@ MonoBehaviour:
   - title: Turn project into a UPM package
     description: 
     progress: 0
+    isEditing: 0
+  - title: '[Bug] "Move To" options not updating as they should'
+    description: they don't update after deleting a task list
+    progress: 1
     isEditing: 0
   - title: Shortcuts
     description: '- Save all on Ctrl+S

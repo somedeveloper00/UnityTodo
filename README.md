@@ -39,3 +39,16 @@ or if you don't have git, simply download the zip and extract it into your proje
 * You can access task's menu bar with right clicking the task (otherwise clicking the menu button (three dots) will do the same)
 * You can save an editing task just by hitting `Enter` after writing the title.
 * You can cancel any editing task and remove all selections (and focus) by hitting `Escape`.
+
+## 🤝 Contribute
+Feel free to open issues and pull requests. There are no strict rules for contributing, but please try to follow the coding style of the project. If you want to contact me, you can find my email in my profile.
+
+## 🙌 Support
+If you like my work, you can buy me a coffee to keep me motivated to work on this project and other projects like this. 
+My wallet addresses are: 
+* BTC: `bc1q808ykgvhn2ewtx09n3kdhnlmcnc6xqwxa0hnys`
+* ETH: `0xCe7028266Cf3eF0E63437d0604511e30f8e4B4Af`
+* LTC: `ltc1qlu2jahcdr5kqf5dp9xt3zr3cv66gm2p8hmnz9j`
+
+## 📝 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

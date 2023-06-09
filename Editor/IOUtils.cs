@@ -43,5 +43,14 @@ namespace UnityTodo {
             }
             return taskListPaths.ToList();
         }
+        
+        public static GithubWindow.GithubData GetGithubDataFromPrefs() {
+            return JsonUtility.FromJson<GithubWindow.GithubData>(EditorPrefs.GetString( "unity-todo.githubtoken", "{}" ));
+        }
+        public static void SaveGithubDataToPrefs(GithubWindow.GithubData data) {
+            EditorPrefs.SetString( "unity-todo.githubtoken", JsonUtility.ToJson( data ) );
+        }
+        
+    
     }
 }

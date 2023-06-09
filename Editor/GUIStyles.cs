@@ -364,6 +364,17 @@ namespace UnityTodo {
 
 #region TODO Window
         
+        [NonSerialized] static Texture2D _todoWidnow_GithubIconTex;
+        public static Texture2D TodoWindow_GetGithubIconTex() {
+            if (_todoWidnow_GithubIconTex == null) {
+                _todoWidnow_GithubIconTex = EditorGUIUtility.isProSkin
+                    ? AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Plugins/UnityTodo/Editor/Resources/d_logo-github.png" )
+                    : AssetDatabase.LoadAssetAtPath<Texture2D>( "Assets/Plugins/UnityTodo/Editor/Resources/logo-github.png" );
+                
+            }
+            return _todoWidnow_GithubIconTex;
+        }
+
         [NonSerialized] static Texture2D _todoWidnow_TaskListGripTex;
         public static Texture2D TodoWindow_GetTaskListGripTex() {
             if (_todoWidnow_TaskListGripTex == null) {

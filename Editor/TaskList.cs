@@ -274,10 +274,8 @@ namespace UnityTodo {
                 
                 // first time always make wrong list element heights, so we have to flush it one time
                 if (firstTime && Event.current.type == EventType.Repaint) {
-                    firstTime = false; 
-                    EditorWindow.focusedWindow?.Repaint(); 
-                    _list.ClearCache();
-                    _list.CacheIfNeeded();
+                    firstTime = false;
+                    (EditorWindow.focusedWindow as TodoWindow)?.RepaintAll(); 
                 }
             }
         }

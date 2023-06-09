@@ -15,13 +15,17 @@ MonoBehaviour:
   order: 1
   title: Backlog
   tasks:
-  - title: Add comment support for each Task
-    description: 
-    progress: 0
-    isEditing: 0
-    bulletPoints: []
-    references: []
   - title: Sync with Github's Project
+    description: only support for title and body and column
+    progress: 0.5
+    isEditing: 0
+    bulletPoints:
+    - description: Pull
+      done: 1
+    - description: Push
+      done: 0
+    references: []
+  - title: Add comment support for each Task
     description: 
     progress: 0
     isEditing: 0

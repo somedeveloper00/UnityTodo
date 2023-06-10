@@ -60,6 +60,7 @@ namespace UnityTodo {
                                 GUIUtility.keyboardControl = 0;
                                 GUIUtility.hotControl = 0;
                                 Repaint();
+                                _list.ClearCache();
                             } );
                         }
                         else {
@@ -81,6 +82,7 @@ namespace UnityTodo {
                                 progressProp.floatValue = 1;
                                 _list.serializedProperty.serializedObject.ApplyModifiedProperties();
                                 Repaint();
+                                _list.ClearCache();
                             } );
                         }
 
@@ -151,8 +153,7 @@ namespace UnityTodo {
                     
 
                 };
-                _list.elementHeightCallback += index =>
-                    EditorGUI.GetPropertyHeight( tasksProp.GetArrayElementAtIndex( index ) );
+                _list.elementHeightCallback += index => EditorGUI.GetPropertyHeight( tasksProp.GetArrayElementAtIndex( index ) );
                 _list.drawFooterCallback += rect => {
                     if (GUI.Button( rect, new GUIContent( " New Task", EditorGUIUtility.FindTexture( "d_CreateAddNew" ) ) )) {
                         _list.serializedProperty.arraySize++;
@@ -164,8 +165,6 @@ namespace UnityTodo {
                     }
                 };
                 _list.footerHeight = 30;
-                
-                
             }
 
             public override void OnInspectorGUI() {

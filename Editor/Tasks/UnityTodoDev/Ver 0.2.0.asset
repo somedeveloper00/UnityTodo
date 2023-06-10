@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28f426c28f004c51b70860267b3cb7bd, type: 3}
+  m_Name: Ver 0.2.0
+  m_EditorClassIdentifier: 
+  order: 2
+  title: Ver 0.2.0
+  tasks:
+  - title: '[Bug] ExposedReorderableList reflection error for Unity 2022'
+    description: 
+    progress: 0
+    isEditing: 0
+    bulletPoints: []
+    references: []
+  - title: '[bug] task bad text wrap'
+    description: 
+    progress: 0
+    isEditing: 0
+    bulletPoints: []
+    references: []
+  - title: Add comment support for each Task
+    description: 
+    progress: 0
+    isEditing: 0
+    bulletPoints: []
+    references: []
+  - title: Sync with Github's Project
+    description: 
+    progress: 0
+    isEditing: 0
+    bulletPoints: []
+    references: []
+  - title: Sync with Trello
+    description: 
+    progress: 0
+    isEditing: 0
+    bulletPoints: []
+    references: []
+  - title: Add nonprogressive Tasks
+    description: i.e. for backlog tasks that don't need progress at the time of being
+      at backlog
+    progress: 0
+    isEditing: 0
+    bulletPoints: []
+    references: []
+  - title: Task Color
+    description: Add option to pin color to a task (preferrably a gradient based
+      on a serializefield color) for the background of the task)
+    progress: 0
+    isEditing: 0
+    bulletPoints: []
+    references: []

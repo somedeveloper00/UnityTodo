@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28f426c28f004c51b70860267b3cb7bd, type: 3}
   m_Name: First UPM Release
   m_EditorClassIdentifier: 
-  order: 2
+  order: 4
   title: First UPM Release
   tasks:
   - title: Turn project into a UPM package
     description: 
-    progress: 0
+    progress: 1
     isEditing: 0
     bulletPoints: []
     references: []

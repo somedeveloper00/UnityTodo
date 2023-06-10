@@ -15,7 +15,13 @@ namespace UnityTodo {
         
         public static List<string> GetActiveDirectoriesFromPrefs() {
             var r = EditorPrefs.GetString( "unity-todo.activedirs", "{}" );
-            return JsonUtility.FromJson<List_string>( r ).strings ?? new List<string>();
+            var dirs = JsonUtility.FromJson<List_string>( r ).strings ?? new List<string>();
+            
+            // remove dirs that don't exist anymore
+            for (int i = 0; i < dirs.Count; i++)
+                if (!Directory.Exists( dirs[i] ))
+                    dirs.RemoveAt( i-- );
+            return dirs;
         }
         
         public static void SaveActiveDirectoriesToPrefs(List<string> activeDirectories) {

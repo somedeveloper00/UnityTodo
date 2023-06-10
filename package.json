@@ -1,0 +1,22 @@
+{
+  "name": "com.somedeveloper.unitytodo",
+  "version": "0.1.0",
+  "displayName": "Unity TODO",
+  "description": "Task management right inside Unity",
+  "unity": "2021.2",
+  "unityRelease": "13f1",
+  "documentationUrl": "https://github.com/somedeveloper00/UnityTodo/README.md",
+  "licensesUrl": "https://github.com/somedeveloper00/UnityTodo/LICENSE.md",
+  "keywords": [
+    "todo",
+    "task",
+    "task management",
+    "github",
+    "trello"
+  ],
+  "author": {
+    "name": "SomeDeveloper",
+    "email": "barari.saeed.am@gmail.com",
+    "url": "https://github.com/somedeveloper00"
+  }
+}

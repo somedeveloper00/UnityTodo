@@ -10,3 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * ExposedReorderableList's methods improvised with Unity 2022's new names.
 * Saved directories will not be used if they don't exist anymore.
 * Added a notice for when there's a dot in TaskList's title.
+
+## [0.1.2] - 2023-6-10
+
+### Fixes 
+* [Fix] Line-wrapped texts stagger when the window is resized.
+* [Fix] Finished Tasks entering edit mode with strikethrough and potentially saved that way.
+* [Fix] Tasks size not updating on context menu actions.
+* Minor performance improvements.

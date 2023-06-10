@@ -22,49 +22,59 @@ MonoBehaviour:
       tune colors'
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Title word wrap support
     description: 
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Enter Edit mode by mouse click
     description: 
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Global Font Size
     description: 
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Fixed Menu Button in light mode
     description: 
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Directory-based Grouping
     description: 
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: Assembly only in Editor
     description: 
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: '[bug] delete tasks without console warning'
     description: 
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: '[bug] height inconsistency caused by word wrapping'
     description: 
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []
   - title: '[bug] initial element heigts not correct'
     description: 
     progress: 1
     isEditing: 0
+    bulletPoints: []
     references: []

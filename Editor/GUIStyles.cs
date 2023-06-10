@@ -52,9 +52,8 @@ namespace UnityTodo {
         [NonSerialized] static GUIStyle _normalLabel;
         public static GUIStyle GetNormalLabel() {
             if (_normalLabel == null) {
-                var style = new GUIStyle( EditorStyles.label );
+                var style = new GUIStyle( EditorStyles.wordWrappedLabel );
                 style.fontSize = NORMAL_FONT_SIZE;
-                style.wordWrap = true;
                 style.richText = true;
                 style.alignment = TextAnchor.MiddleCenter;
                 _normalLabel = style;
@@ -79,9 +78,8 @@ namespace UnityTodo {
         [NonSerialized] static GUIStyle _smallLabel;
         public static GUIStyle GetSmallLabel() {
             if (_smallLabel == null) {
-                var style = new GUIStyle( EditorStyles.label );
+                var style = new GUIStyle( EditorStyles.wordWrappedLabel );
                 style.fontSize = SMALL_FONT_SIZE;
-                style.wordWrap = true;
                 style.alignment = TextAnchor.MiddleLeft;
                 style.richText = true;
                 _smallLabel = style;
@@ -203,15 +201,11 @@ namespace UnityTodo {
         [NonSerialized] static GUIStyle _task_FinishedTitleText;
         public static GUIStyle Task_GetFinishedTitleText() {
             if (_task_FinishedTitleText == null) {
-                var style = new GUIStyle( EditorStyles.label );
+                var style = new GUIStyle( EditorStyles.wordWrappedLabel );
                 style.fontSize = NORMAL_FONT_SIZE;
-                style.wordWrap = true;
                 style.alignment = TextAnchor.MiddleCenter;
                 style.richText = false;
-                style.normal.textColor =
-                    style.hover.textColor =
-                    style.active.textColor =
-                    EditorGUIUtility.isProSkin ? new(0.75f, 0.75f, 0.75f) : new(0.25f, 0.25f, 0.25f);
+                style.normal.textColor = EditorGUIUtility.isProSkin ? new(0.75f, 0.75f, 0.75f) : new(0.25f, 0.25f, 0.25f);
                 _task_FinishedTitleText = style;
             }
 
@@ -221,16 +215,12 @@ namespace UnityTodo {
         [NonSerialized] static GUIStyle _task_UnfinishedTitleText;
         public static GUIStyle Task_GetUnfinishedTitleText() {
             if (_task_UnfinishedTitleText == null) {
-                var style = new GUIStyle( EditorStyles.label );
+                var style = new GUIStyle( EditorStyles.wordWrappedLabel );
                 style.fontSize = NORMAL_FONT_SIZE;
-                style.wordWrap = true;
                 style.fontStyle = FontStyle.Bold;
                 style.richText = false;
                 style.alignment = TextAnchor.MiddleCenter;
-                style.normal.textColor =
-                    style.hover.textColor =
-                    style.active.textColor =
-                    EditorGUIUtility.isProSkin ? new(0.95f, 0.95f, 0.95f) : new(0.05f, 0.05f, 0.05f);
+                style.normal.textColor = EditorGUIUtility.isProSkin ? new(0.95f, 0.95f, 0.95f) : new(0.05f, 0.05f, 0.05f);
                 _task_UnfinishedTitleText = style;
             }
 
@@ -254,12 +244,8 @@ namespace UnityTodo {
         [NonSerialized] static GUIStyle _task_UnfinishedDescText;
         public static GUIStyle Task_GetUnfinishedDescText() {
             if (_task_UnfinishedDescText == null) {
-                var style = new GUIStyle( EditorStyles.label );
-                style.normal.textColor =
-                    style.hover.textColor =
-                        style.active.textColor =
-                            EditorGUIUtility.isProSkin ? new(0.9f, 0.9f, 0.9f) : new(0.07f, 0.07f, 0.07f);
-                style.wordWrap = true;
+                var style = new GUIStyle( EditorStyles.wordWrappedLabel );
+                style.normal.textColor = EditorGUIUtility.isProSkin ? new(0.9f, 0.9f, 0.9f) : new(0.07f, 0.07f, 0.07f);
                 style.richText = true;
                 style.fontSize = SMALL_FONT_SIZE;
                 style.alignment = TextAnchor.UpperLeft;
@@ -272,10 +258,9 @@ namespace UnityTodo {
         [NonSerialized] static GUIStyle _task_FinishedDescText;
         public static GUIStyle Task_GetFinishedDescText() {
             if (_task_FinishedDescText == null) {
-                var style = new GUIStyle( EditorStyles.label );
+                var style = new GUIStyle( EditorStyles.wordWrappedLabel );
                 style.normal.textColor =
                     EditorGUIUtility.isProSkin ? new(0.8f, 0.8f, 0.8f) : new(0.3f, 0.3f, 0.3f);
-                style.wordWrap = true;
                 style.richText = true;
                 style.fontStyle = FontStyle.Italic;
                 style.fontSize = SMALL_FONT_SIZE;

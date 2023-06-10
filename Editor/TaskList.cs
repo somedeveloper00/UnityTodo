@@ -15,6 +15,8 @@ namespace UnityTodo {
 
         [CustomEditor(typeof(TaskList))]
         public class Editor : UnityEditor.Editor {
+
+            public static float currentTaskListWidth;
             
             [NonSerialized] ExposedReorderableList _list;
             [NonSerialized] Vector3 tasksScrollPos;
@@ -60,6 +62,7 @@ namespace UnityTodo {
                                 GUIUtility.keyboardControl = 0;
                                 GUIUtility.hotControl = 0;
                                 Repaint();
+                                _list.ClearCache();
                             } );
                         }
                         else {
@@ -81,6 +84,7 @@ namespace UnityTodo {
                                 progressProp.floatValue = 1;
                                 _list.serializedProperty.serializedObject.ApplyModifiedProperties();
                                 Repaint();
+                                _list.ClearCache();
                             } );
                         }
 
@@ -113,7 +117,7 @@ namespace UnityTodo {
                     
                     // check for click anywhere to enter edit mode
                     // the reason for doing it here is EditorGUI.PropertyField uses up the mouse event 
-                    bool leftClickedAnywhere() => Event.current.type == EventType.MouseUp && Event.current.button == 0;
+                    bool leftClickedAnywhere() => Event.current.type == EventType.MouseDown && Event.current.button == 0;
                     bool mouseOverProp() => rect.Contains( Event.current.mousePosition );
                     var wantsToGoEditMode = !isEditingProp.boolValue && leftClickedAnywhere() && mouseOverProp();
 
@@ -151,8 +155,7 @@ namespace UnityTodo {
                     
 
                 };
-                _list.elementHeightCallback += index =>
-                    EditorGUI.GetPropertyHeight( tasksProp.GetArrayElementAtIndex( index ) );
+                _list.elementHeightCallback += index => EditorGUI.GetPropertyHeight( tasksProp.GetArrayElementAtIndex( index ) );
                 _list.drawFooterCallback += rect => {
                     if (GUI.Button( rect, new GUIContent( " New Task", EditorGUIUtility.FindTexture( "d_CreateAddNew" ) ) )) {
                         _list.serializedProperty.arraySize++;
@@ -164,8 +167,6 @@ namespace UnityTodo {
                     }
                 };
                 _list.footerHeight = 30;
-                
-                
             }
 
             public override void OnInspectorGUI() {
@@ -249,6 +250,9 @@ namespace UnityTodo {
 
                 using (var scroll = new EditorGUILayout.ScrollViewScope( tasksScrollPos )) {
                     tasksScrollPos = scroll.scrollPosition;
+                    if (Event.current.type == EventType.Repaint) {
+                        currentTaskListWidth = headerRect.width - 28;
+                    }
                     _list.DoLayoutList();
                 }
                 

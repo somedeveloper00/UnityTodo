@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEditorInternal;
 
 namespace UnityTodo {
-    public class ExposedReorderableList : ReorderableList {
+    internal class ExposedReorderableList : ReorderableList {
         public ExposedReorderableList(IList elements, Type elementType) : base( elements, elementType ) { }
         public ExposedReorderableList(IList elements, Type elementType, bool draggable, bool displayHeader, bool displayAddButton, bool displayRemoveButton) : base( elements, elementType, draggable, displayHeader, displayAddButton, displayRemoveButton ) { }
         public ExposedReorderableList(SerializedObject serializedObject, SerializedProperty elements) : base( serializedObject, elements ) { }

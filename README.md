@@ -14,6 +14,10 @@
 * Bullet-Points for task details
 
 ## 🛠️ Installation
+### UPM
+You can install this as a unity package by following the instructions at [the official manual](https://docs.unity3d.com/Manual/upm-ui-giturl.html). 
+> The package url is `https://github.com/somedeveloper00/UnityTodo.git`
+### Git Submodule
 clone the repository into your project's Assets/Plugins folder as a submodule:
 ```bash
 git submodule add --force https://github.com/somedeveloper00/UnityTodo/ Assets/Plugins/UnityTodo

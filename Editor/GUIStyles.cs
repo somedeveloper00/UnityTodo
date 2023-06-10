@@ -5,9 +5,9 @@ using UnityEngine;
 namespace UnityTodo {
     internal static class GUIStyles {
         
-        public const int BIG_FONT_SIZE = (int)(20 * Settings.FONT_SCALE);
-        public const int NORMAL_FONT_SIZE = (int)(15 * Settings.FONT_SCALE);
-        public const int SMALL_FONT_SIZE = (int)(12 * Settings.FONT_SCALE);
+        public const int BIG_FONT_SIZE = 20;
+        public const int NORMAL_FONT_SIZE = 15;
+        public const int SMALL_FONT_SIZE = 12;
 
         [NonSerialized] static GUIStyle _bigTextField;
         public static GUIStyle GetBigTextField() {

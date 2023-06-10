@@ -115,7 +115,7 @@ namespace UnityTodo {
                     
                     // check for click anywhere to enter edit mode
                     // the reason for doing it here is EditorGUI.PropertyField uses up the mouse event 
-                    bool leftClickedAnywhere() => Event.current.type == EventType.MouseUp && Event.current.button == 0;
+                    bool leftClickedAnywhere() => Event.current.type == EventType.MouseDown && Event.current.button == 0;
                     bool mouseOverProp() => rect.Contains( Event.current.mousePosition );
                     var wantsToGoEditMode = !isEditingProp.boolValue && leftClickedAnywhere() && mouseOverProp();
 

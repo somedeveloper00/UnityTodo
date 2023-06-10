@@ -64,6 +64,13 @@ namespace UnityTodo {
                         : progressProp.floatValue < 1 ? Task_GetUnfinishedTitleText() : Task_GetFinishedTitleText();
                     var titleHeight = titleStyle.CalcHeight( new GUIContent( titleText ), position.width );
                     position.height = titleHeight;
+
+                    { // handle click on text to enter edit mode AND select the title text as it normally would
+                        if (Event.current.type == EventType.MouseDown && Event.current.button == 0 && position.Contains( Event.current.mousePosition )) {
+                            titleText = titleProp.stringValue;
+                        }
+                    }
+                    
                     using (var check = new EditorGUI.ChangeCheckScope()) {
                         GUI.SetNextControlName( TITLE_CONTROL_NAME );
                         var r = EditorGUI.TextField( position, titleText, titleStyle );

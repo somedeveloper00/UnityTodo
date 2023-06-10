@@ -18,5 +18,6 @@
     "name": "SomeDeveloper",
     "email": "barari.saeed.am@gmail.com",
     "url": "https://github.com/somedeveloper00"
-  }
+  },
+  "hideInEditor": false
 }

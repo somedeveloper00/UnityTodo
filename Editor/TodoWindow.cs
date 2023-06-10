@@ -266,14 +266,24 @@ namespace UnityTodo {
         }
 
         void forceSaveAllTaskEditors() {
-            foreach (var taskEditor in taskEditors) {
-                foreach (var task in taskEditor.taskList.tasks) {
-                    task.isEditing = false;
-                }
+            for (var i = 0; i < taskEditors.Count; i++) {
+                var taskEditor = taskEditors[i];
+                foreach (var task in taskEditor.taskList.tasks) task.isEditing = false;
+
                 if (taskEditor.editor) {
                     taskEditor.editor.serializedObject.ApplyModifiedProperties();
                     if (taskEditor.taskList.name != taskEditor.taskList.title) {
                         AssetDatabase.RenameAsset( AssetDatabase.GetAssetPath( taskEditor.taskList ), taskEditor.taskList.title );
+                        
+                        // notice for dot in asset file name issue
+                        if (taskEditor.taskList.title.Contains( "." )) {
+                            Debug.Log( $"If you got warning about Object name not matching the file name, it's because you have a dot (.) in your TaskList title, " +
+                                       $"and Unity's AssetDatabase doesn't work well with that sort of name. Solutions:\n" +
+                                       $"1. Select the file and click on Fix Object Name button in the inspector.\n" +
+                                       $"2. Don't use dots (.) in your TaskList title. \n\n" +
+                                       $"If this is making the usage experience too poorly, consider contacting me about it to prioritize fixing this issue. Thanks.",
+                                taskEditor.taskList );
+                        }
                     }
                 }
             }
@@ -285,7 +295,6 @@ namespace UnityTodo {
         void forceReloadAllTaskEditors() {
             // reimport path
             AssetDatabase.Refresh();
-            AssetDatabase.ImportAsset( Settings.TODO_DIRECTORY_PATH, ImportAssetOptions.ImportRecursive );
             taskEditors =
                 taskListPaths
                 .SelectMany( tpath => GetAllTaskListsAtPath(tpath.path) )
@@ -299,7 +308,6 @@ namespace UnityTodo {
             if (taskListPaths == null) {
                 taskListPaths = GetActiveDirectoriesFromPrefs().Select( s => new TaskListDirectory( s ) ).ToList();
                 Repaint();
-                Debug.Log( $"loaded all" );
             } 
         }
        

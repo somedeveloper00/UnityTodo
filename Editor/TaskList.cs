@@ -15,6 +15,8 @@ namespace UnityTodo {
 
         [CustomEditor(typeof(TaskList))]
         public class Editor : UnityEditor.Editor {
+
+            public static float currentTaskListWidth;
             
             [NonSerialized] ExposedReorderableList _list;
             [NonSerialized] Vector3 tasksScrollPos;
@@ -248,6 +250,9 @@ namespace UnityTodo {
 
                 using (var scroll = new EditorGUILayout.ScrollViewScope( tasksScrollPos )) {
                     tasksScrollPos = scroll.scrollPosition;
+                    if (Event.current.type == EventType.Repaint) {
+                        currentTaskListWidth = headerRect.width - 28;
+                    }
                     _list.DoLayoutList();
                 }
                 

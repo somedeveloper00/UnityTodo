@@ -15,6 +15,12 @@ MonoBehaviour:
   order: 2
   title: Ver 0.2.0
   tasks:
+  - title: '[FATAL BUG] new TaskLists don''t save copied Tasks'
+    description: 
+    progress: 0
+    isEditing: 0
+    bulletPoints: []
+    references: []
   - title: '[Bug] ExposedReorderableList reflection error for Unity 2022'
     description: 
     progress: 0

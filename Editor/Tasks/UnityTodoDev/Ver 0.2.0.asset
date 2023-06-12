@@ -15,12 +15,6 @@ MonoBehaviour:
   order: 2
   title: Ver 0.2.0
   tasks:
-  - title: '[FATAL BUG] new TaskLists don''t save copied Tasks'
-    description: 
-    progress: 0
-    isEditing: 0
-    bulletPoints: []
-    references: []
   - title: '[Bug] ExposedReorderableList reflection error for Unity 2022'
     description: 
     progress: 0
@@ -62,6 +56,12 @@ MonoBehaviour:
     description: Add option to pin color to a task (preferrably a gradient based
       on a serializefield color) for the background of the task)
     progress: 0
+    isEditing: 0
+    bulletPoints: []
+    references: []
+  - title: '[FATAL BUG] new TaskLists don''t save copied Tasks'
+    description: 
+    progress: 1
     isEditing: 0
     bulletPoints: []
     references: []

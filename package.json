@@ -1,6 +1,6 @@
 {
   "name": "com.somedeveloper.unitytodo",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "displayName": "Unity TODO",
   "description": "Task management right inside Unity",
   "unity": "2021.2",

@@ -89,21 +89,20 @@ namespace UnityTodo {
                         }
 
                         if (EditorWindow.focusedWindow is TodoWindow todoWindow) {
-                            foreach (var (taskList, _) in todoWindow.taskEditors) {
+                            foreach (var (taskList, taskListEditor) in todoWindow.taskEditors) {
                                 var isSelf = taskList == target;
                                 if (isSelf) { menu.AddDisabledItem( new GUIContent( $"Move to/{taskList.title}" ), true ); }
                                 else {
                                     menu.AddItem( new GUIContent( $"Move to/{taskList.title}" ), false, () => {
-                                        var task = tasksProp.GetArrayElementAtIndex( index );
+                                        taskListEditor.serializedObject.ApplyModifiedProperties();
+                                        serializedObject.ApplyModifiedProperties();
                                         Undo.RecordObject( taskList, "Moved task" );
-                                        taskList.tasks.Add( new Task {
-                                            title = task.FindPropertyRelative( nameof(Task.title) ).stringValue,
-                                            description = task.FindPropertyRelative( nameof(Task.description) ).stringValue,
-                                            progress = task.FindPropertyRelative( nameof(Task.progress) ).floatValue,
-                                            isEditing = task.FindPropertyRelative( nameof(Task.isEditing) ).boolValue,
-                                        } );
-                                        tasksProp.DeleteArrayElementAtIndex( index );
-                                        _list.serializedProperty.serializedObject.ApplyModifiedProperties();
+                                        taskList.tasks.Add( ((TaskList)target).tasks[index].Copied() );
+                                        ((TaskList)target).tasks.RemoveAt( index );
+                                        EditorUtility.SetDirty( target );
+                                        EditorUtility.SetDirty( taskList );
+                                        serializedObject.Update();
+                                        taskListEditor.serializedObject.Update();
                                     } );
                                 }
                             }

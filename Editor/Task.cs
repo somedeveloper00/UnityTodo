@@ -15,6 +15,18 @@ namespace UnityTodo {
         public List<BulletPoint> bulletPoints = new();
         public List<Reference> references = new();
 
+        public Task Copied() {
+            var copy = new Task {
+                title = title,
+                description = description,
+                progress = progress,
+                isEditing = isEditing,
+                bulletPoints = new List<BulletPoint>( bulletPoints ),
+                references = new List<Reference>( references )
+            };
+            return copy;
+        }
+
         [Serializable] public struct Reference {
             public string name;
             public string path;

@@ -78,3 +78,9 @@ MonoBehaviour:
     isEditing: 0
     bulletPoints: []
     references: []
+  - title: '[FATAL BUG] new TaskLists don''t save copied Tasks'
+    description: 
+    progress: 1
+    isEditing: 0
+    bulletPoints: []
+    references: []

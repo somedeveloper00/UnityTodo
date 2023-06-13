@@ -17,7 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * [Fix] Tasks size not updating on context menu actions.
 * Minor performance improvements.
 
-## [0.1.3] - 2023-6-10
+## [0.1.3] - 2023-6-12
 
-### FATAL FIX 
 * [FATAL FIX] Copied tasks not saving properly.
+
+## [0.1.4] - 2023-6-13
+
+* [Fix] string NullReferenceException when saving new TaskList without any name

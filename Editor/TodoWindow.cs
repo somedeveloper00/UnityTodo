@@ -276,7 +276,7 @@ namespace UnityTodo {
                         AssetDatabase.RenameAsset( AssetDatabase.GetAssetPath( taskEditor.taskList ), taskEditor.taskList.title );
                         
                         // notice for dot in asset file name issue
-                        if (taskEditor.taskList.title.Contains( "." )) {
+                        if (!string.IsNullOrEmpty( taskEditor.taskList.title ) && taskEditor.taskList.title.Contains( "." )) {
                             Debug.Log( $"If you got warning about Object name not matching the file name, it's because you have a dot (.) in your TaskList title, " +
                                        $"and Unity's AssetDatabase doesn't work well with that sort of name. Solutions:\n" +
                                        $"1. Select the file and click on Fix Object Name button in the inspector.\n" +

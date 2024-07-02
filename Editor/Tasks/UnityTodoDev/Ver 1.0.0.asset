@@ -21,41 +21,69 @@ MonoBehaviour:
     isEditing: 0
     bulletPoints: []
     references: []
+    useCustomTitleColor: 0
+    titleColor: {r: 0, g: 0, b: 0, a: 0}
+    useCustomBackgroundColor: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
   - title: Sync with Github's Project
     description: 
     progress: 0
     isEditing: 0
     bulletPoints: []
     references: []
+    useCustomTitleColor: 0
+    titleColor: {r: 0, g: 0, b: 0, a: 0}
+    useCustomBackgroundColor: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
   - title: Sync with Trello
     description: 
     progress: 0
     isEditing: 0
     bulletPoints: []
     references: []
-  - title: Add nonprogressive Tasks
-    description: i.e. for backlog tasks that don't need progress at the time of being
-      at backlog
-    progress: 0
-    isEditing: 0
-    bulletPoints: []
-    references: []
+    useCustomTitleColor: 0
+    titleColor: {r: 0, g: 0, b: 0, a: 0}
+    useCustomBackgroundColor: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
   - title: Task Color
     description: Add option to pin color to a task (preferrably a gradient based
       on a serializefield color) for the background of the task)
-    progress: 0
+    progress: 1
     isEditing: 0
     bulletPoints: []
     references: []
+    useCustomTitleColor: 1
+    titleColor: {r: 1, g: 0.2688679, b: 0.2688679, a: 1}
+    useCustomBackgroundColor: 1
+    backgroundColor: {r: 0.32941177, g: 0.07226431, b: 0.04313725, a: 0.33333334}
+  - title: Add nonprogressive Tasks
+    description: i.e. for backlog tasks that don't need progress at the time of being
+      at backlog
+    progress: 1
+    isEditing: 0
+    bulletPoints: []
+    references: []
+    useCustomTitleColor: 0
+    titleColor: {r: 0, g: 0, b: 0, a: 0}
+    useCustomBackgroundColor: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
   - title: '[bug] task bad text wrap'
     description: 
     progress: 1
     isEditing: 0
     bulletPoints: []
     references: []
+    useCustomTitleColor: 0
+    titleColor: {r: 0, g: 0, b: 0, a: 0}
+    useCustomBackgroundColor: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}
   - title: '[Bug] ExposedReorderableList reflection error for Unity 2022'
     description: 
     progress: 1
     isEditing: 0
     bulletPoints: []
     references: []
+    useCustomTitleColor: 0
+    titleColor: {r: 0, g: 0, b: 0, a: 0}
+    useCustomBackgroundColor: 0
+    backgroundColor: {r: 0, g: 0, b: 0, a: 0}

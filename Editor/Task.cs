@@ -378,7 +378,7 @@ namespace UnityTodo
                     // edit colors
                     if (isEditingProp.boolValue)
                     {
-                        const int LabelWidth = 60;
+                        const int LabelWidth = 80;
 
                         // title color
                         GUI.Label(position, "Title:");

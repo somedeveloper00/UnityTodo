@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using static UnityTodo.GUIStyles;
@@ -26,6 +27,10 @@ namespace UnityTodo
         public Color titleColor;
         public bool useCustomBackgroundColor;
         public Color backgroundColor;
+
+        public bool HasProgress => progress >= 0 || bulletPoints.Count > 0;
+
+        public float ProgressDisplay => progress >= 0 ? progress : bulletPoints.Count > 0 ? bulletPoints.Count(b => b.done) / (float)bulletPoints.Count : 0;
 
         public Task Copied()
         {
@@ -82,7 +87,6 @@ namespace UnityTodo
                 var titleColorProp = property.FindPropertyRelative(nameof(titleColor));
                 var useCustomBackgroundColorProp = property.FindPropertyRelative(nameof(useCustomBackgroundColor));
                 var backgroundColorProp = property.FindPropertyRelative(nameof(backgroundColor));
-
 
                 using (new EditorGUI.PropertyScope(position, label, property))
                 {
@@ -324,7 +328,6 @@ namespace UnityTodo
                         if (isEditingProp.boolValue || referencesProp.arraySize > 0) position.y += 5;
                     }
 
-
                     // progress prop
                     position.height = EditorGUIUtility.singleLineHeight;
                     var oldWidth = position.width;
@@ -358,7 +361,7 @@ namespace UnityTodo
                     }
                     else
                     {
-                        if (progressProp.floatValue != -1)
+                        if (progressProp.floatValue != -1 || bulletPointsProp.arraySize > 0)
                         {
                             var rect = new Rect(position.x, position.y + position.height * 0.25f, position.width, position.height * (1 - 0.25f * 2));
                             EditorGUI.DrawRect(rect, Taskt_ProgOutlineCol);
@@ -367,7 +370,24 @@ namespace UnityTodo
                             rect.width -= 2;
                             rect.height -= 2;
                             EditorGUI.DrawRect(rect, Taskt_ProgressBackCol);
-                            rect.width *= progressProp.floatValue;
+                            float progress = 0;
+                            if (progressProp.floatValue >= 0)
+                            {
+                                progress = progressProp.floatValue;
+                            }
+                            else
+                            {
+                                // sum finished tasks
+                                float c = 1f / bulletPointsProp.arraySize;
+                                for (int i = 0; i < bulletPointsProp.arraySize; i++)
+                                {
+                                    if (bulletPointsProp.GetArrayElementAtIndex(i).FindPropertyRelative(nameof(BulletPoint.done)).boolValue)
+                                    {
+                                        progress += c;
+                                    }
+                                }
+                            }
+                            rect.width *= progress;
                             EditorGUI.DrawRect(rect, progressProp.floatValue < 1 ? Taskt_UnfinishedProgressCol : Taskt_FinishedProgressCol);
                             position.y += rect.height * 2 + 2;
                         }
@@ -457,7 +477,7 @@ namespace UnityTodo
                     h += 20 + EditorGUIUtility.standardVerticalSpacing;
 
                 // progress
-                if (progressProp.floatValue != -1 || isEditingProp.boolValue)
+                if (progressProp.floatValue != -1 || bulletPointsProp.arraySize > 0 || isEditingProp.boolValue)
                 {
                     h += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                 }

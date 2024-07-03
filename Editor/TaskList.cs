@@ -13,20 +13,10 @@ namespace UnityTodo
         public string title;
         public List<Task> tasks = new();
 
-        public float GetProgress()
-        {
-            int count = 0;
-            float total = 0;
-            foreach (var task in tasks.Where(t => t.progress >= 0))
-            {
-                count++;
-                total += task.progress;
-            }
-            return count == 0 ? 1 : total / count;
-        }
+        public float GetProgress() => tasks.Sum(t => t.ProgressDisplay) / tasks.Count(t => t.HasProgress);
 
         [CustomEditor(typeof(TaskList))]
-        public class Editor : UnityEditor.Editor
+        public sealed class Editor : UnityEditor.Editor
         {
             public static float currentTaskListWidth;
 

@@ -38,8 +38,12 @@ namespace UnityTodo
 
         void OnDestroy()
         {
+            if (taskEditors == null)
+            {
+                return;
+            }
             forceSaveAllTaskEditors();
-            foreach (var taskEditor in taskEditors) DestroyImmediate(taskEditor.editor);
+            foreach (var (_, editor) in taskEditors) DestroyImmediate(editor);
         }
 
         public TaskList GetNextTaskList(TaskList taskList)
